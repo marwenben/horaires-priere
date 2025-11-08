@@ -237,7 +237,6 @@ let currentLang = 'fr';
 function changeLanguage(lang) {
     currentLang = lang;
     
-    // Mettre à jour les classes CSS
     if (lang === 'ar') {
         document.body.classList.add('arabic');
         document.documentElement.setAttribute('lang', 'ar');
@@ -246,18 +245,15 @@ function changeLanguage(lang) {
         document.documentElement.setAttribute('lang', 'fr');
     }
     
-    // Mettre à jour les boutons de langue
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     document.getElementById(`lang-${lang}`).classList.add('active');
     
-    // Mettre à jour tous les textes traduits
     document.querySelectorAll('[data-fr][data-ar]').forEach(element => {
         element.textContent = element.getAttribute(`data-${lang}`);
     });
     
-    // Recharger les informations
     displayIslamicDate();
     displayRamadanCountdown();
     loadAllPrayerTimes();
@@ -283,24 +279,13 @@ async function updateCityDisplay(cityKey) {
     const cityId = selectedCities[cityKey];
     const cityData = citiesDatabase[cityId];
     
-    // Mettre à jour le nom de la ville
     document.getElementById(`${cityKey}-name`).textContent = cityData.displayName[currentLang];
     
-    // Charger les horaires de prière
     const timings = await getPrayerTimesForCity(cityId);
     if (timings) {
         displayPrayerTimes(cityKey, timings);
     }
 }
-
-// Noms des prières en français
-const prayerNames = {
-    Fajr: 'Fajr (Aube)',
-    Dhuhr: 'Dhuhr (Midi)',
-    Asr: 'Asr (Après-midi)',
-    Maghrib: 'Maghrib (Coucher du soleil)',
-    Isha: 'Isha (Nuit)'
-};
 
 // Fonction pour formater la date
 function formatDate() {
@@ -375,9 +360,7 @@ async function displayRamadanCountdown() {
     const ramadanTextElement = document.getElementById('ramadan-text');
     const t = translations[currentLang];
 
-    // Ramadan est le 9ème mois
     if (currentMonth === 9) {
-        // Pendant le Ramadan
         ramadanCountdownElement.classList.add('during-ramadan');
         const daysRemaining = 30 - currentDay;
         if (currentLang === 'ar') {
@@ -387,9 +370,8 @@ async function displayRamadanCountdown() {
             ramadanTextElement.textContent = `${t.ramadanDuring} - ${daysRemaining} ${daysRemaining > 1 ? t.days : t.day} restants`;
         }
     } else if (currentMonth < 9) {
-        // Avant le Ramadan
         ramadanCountdownElement.classList.remove('during-ramadan');
-        const daysInMonths = [30, 29, 30, 29, 30, 29, 30, 29]; // Jours approximatifs jusqu'à Ramadan
+        const daysInMonths = [30, 29, 30, 29, 30, 29, 30, 29];
         let daysUntilRamadan = 0;
         
         for (let i = currentMonth - 1; i < 8; i++) {
@@ -407,7 +389,6 @@ async function displayRamadanCountdown() {
             ramadanTextElement.textContent = `${t.ramadanBefore} ${daysUntilRamadan} ${daysUntilRamadan > 1 ? t.days : t.day} 🌙`;
         }
     } else {
-        // Après le Ramadan
         ramadanCountdownElement.classList.remove('during-ramadan');
         const nextRamadanYear = currentYear + 1;
         const daysUntilNextRamadan = 365 - ((currentMonth - 9) * 30 + currentDay);
@@ -423,7 +404,6 @@ async function displayRamadanCountdown() {
 
 // Fonction pour afficher l'heure locale
 function displayLocalTime() {
-    // Ville 1
     const city1Id = selectedCities.city1;
     const city1Data = citiesDatabase[city1Id];
     if (city1Data) {
@@ -436,7 +416,6 @@ function displayLocalTime() {
         document.getElementById('city1-time').textContent = city1Time;
     }
     
-    // Ville 2
     const city2Id = selectedCities.city2;
     const city2Data = citiesDatabase[city2Id];
     if (city2Data) {
@@ -496,13 +475,11 @@ function displayPrayerTimes(cityKey, timings) {
         }
     });
 
-    // Mettre en évidence la prière actuelle et afficher la prochaine
     highlightCurrentPrayer(cityKey, timings);
 }
 
 // Fonction pour mettre en évidence la prière actuelle
 function highlightCurrentPrayer(cityKey, timings) {
-    // Obtenir l'heure locale de la ville spécifique
     const cityId = selectedCities[cityKey];
     const cityData = citiesDatabase[cityId];
     if (!cityData) return;
@@ -516,7 +493,6 @@ function highlightCurrentPrayer(cityKey, timings) {
     let currentPrayer = null;
     let nextPrayer = null;
 
-    // Convertir les heures de prière en minutes
     const prayerTimes = prayers.map(prayer => {
         const [hours, minutes] = timings[prayer].split(':').map(Number);
         return {
@@ -526,7 +502,6 @@ function highlightCurrentPrayer(cityKey, timings) {
         };
     });
 
-    // Trouver la prière actuelle et la prochaine
     for (let i = 0; i < prayerTimes.length; i++) {
         const prayerItem = document.querySelector(`#${cityKey}-${prayerTimes[i].name.toLowerCase()}`).parentElement;
         prayerItem.classList.remove('current');
@@ -536,29 +511,25 @@ function highlightCurrentPrayer(cityKey, timings) {
             if (i < prayerTimes.length - 1) {
                 nextPrayer = prayerTimes[i + 1];
             } else {
-                nextPrayer = prayerTimes[0]; // Fajr du lendemain
+                nextPrayer = prayerTimes[0];
             }
         }
     }
 
-    // Si nous sommes avant Fajr
     if (!currentPrayer) {
         nextPrayer = prayerTimes[0];
     }
 
-    // Mettre en évidence la prière actuelle
     if (currentPrayer) {
         const currentElement = document.querySelector(`#${cityKey}-${currentPrayer.name.toLowerCase()}`).parentElement;
         currentElement.classList.add('current');
     }
 
-    // Afficher la prochaine prière
     if (nextPrayer) {
         const nextElement = document.getElementById(`${cityKey}-next`);
         const timeUntil = calculateTimeUntil(nextPrayer.time, currentTime);
         const t = translations[currentLang];
         
-        // Obtenir le nom de la prière dans la langue actuelle
         let prayerName = nextPrayer.name;
         if (currentLang === 'ar') {
             const arabicNames = {
@@ -580,7 +551,7 @@ function calculateTimeUntil(prayerTime, currentTime) {
     let diff = prayerTime - currentTime;
     
     if (diff < 0) {
-        diff += 24 * 60; // Ajouter 24 heures si c'est pour le lendemain
+        diff += 24 * 60;
     }
 
     const hours = Math.floor(diff / 60);
@@ -606,20 +577,15 @@ function updateLastUpdateTime() {
 async function loadAllPrayerTimes() {
     document.getElementById('current-date').textContent = formatDate();
     
-    // Charger les heures pour les deux villes
     const city1Timings = await getPrayerTimes('city1');
     displayPrayerTimes('city1', city1Timings);
     
     const city2Timings = await getPrayerTimes('city2');
     displayPrayerTimes('city2', city2Timings);
     
-    // Afficher la date islamique
     await displayIslamicDate();
-    
-    // Afficher le compte à rebours Ramadan
     await displayRamadanCountdown();
     
-    // Afficher l'heure locale
     displayLocalTime();
     
     updateLastUpdateTime();
@@ -636,7 +602,7 @@ setInterval(() => {
 // Mettre à jour toutes les minutes
 setInterval(() => {
     loadAllPrayerTimes();
-}, 60000); // 60000 ms = 1 minute
+}, 60000);
 
 // Mettre à jour l'affichage de la prière actuelle toutes les 10 secondes
 setInterval(async () => {
@@ -649,11 +615,10 @@ setInterval(async () => {
     if (city2Timings) {
         highlightCurrentPrayer('city2', city2Timings);
     }
-}, 10000); // 10000 ms = 10 secondes
+}, 10000);
 
 // ========== GESTION DU CORAN ==========
 
-// Ouvrir/Fermer modal Coran
 document.getElementById('quran-btn').addEventListener('click', () => {
     document.getElementById('quran-modal').classList.add('active');
 });
@@ -662,14 +627,12 @@ document.getElementById('close-quran').addEventListener('click', () => {
     document.getElementById('quran-modal').classList.remove('active');
 });
 
-// Fermer en cliquant en dehors
 document.getElementById('quran-modal').addEventListener('click', (e) => {
     if (e.target.id === 'quran-modal') {
         document.getElementById('quran-modal').classList.remove('active');
     }
 });
 
-// Charger une sourate
 document.getElementById('load-surah-btn').addEventListener('click', async () => {
     const surahNumber = document.getElementById('surah-select').value;
     const quranTextDiv = document.getElementById('quran-text');
@@ -684,7 +647,6 @@ document.getElementById('load-surah-btn').addEventListener('click', async () => 
             const surah = data.data;
             let html = `<h3 style="text-align: center; color: #1e3c72; margin-bottom: 20px;">سورة ${surah.name} - ${surah.englishName}</h3>`;
             
-            // Ajouter Bismillah sauf pour sourate 9
             if (surahNumber !== '9' && surahNumber !== '1') {
                 html += '<p style="text-align: center; font-size: 1.2em; color: #2a5298; margin-bottom: 20px;">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>';
             }
@@ -709,7 +671,6 @@ let tasbihCount = 0;
 let tasbihTarget = 0;
 let currentTasbihPhrase = 'سُبْحَانَ ٱللَّٰهِ';
 
-// Ouvrir/Fermer modal Tasbih
 document.getElementById('tasbih-btn').addEventListener('click', () => {
     document.getElementById('tasbih-modal').classList.add('active');
 });
@@ -718,37 +679,31 @@ document.getElementById('close-tasbih').addEventListener('click', () => {
     document.getElementById('tasbih-modal').classList.remove('active');
 });
 
-// Fermer en cliquant en dehors
 document.getElementById('tasbih-modal').addEventListener('click', (e) => {
     if (e.target.id === 'tasbih-modal') {
         document.getElementById('tasbih-modal').classList.remove('active');
     }
 });
 
-// Incrémenter le compteur
 document.getElementById('tasbih-increment').addEventListener('click', () => {
     tasbihCount++;
     updateTasbihDisplay();
     
-    // Vibration si disponible
     if (navigator.vibrate) {
         navigator.vibrate(50);
     }
     
-    // Animation du bouton
     const btn = document.getElementById('tasbih-increment');
     btn.style.transform = 'scale(0.95)';
     setTimeout(() => {
         btn.style.transform = 'scale(1)';
     }, 100);
     
-    // Vérifier si l'objectif est atteint
     if (tasbihTarget > 0 && tasbihCount === tasbihTarget) {
         showTasbihGoalReached();
     }
 });
 
-// Réinitialiser
 document.getElementById('tasbih-reset').addEventListener('click', () => {
     if (confirm(currentLang === 'ar' ? 'هل تريد إعادة تعيين العداد؟' : 'Réinitialiser le compteur?')) {
         tasbihCount = 0;
@@ -758,7 +713,6 @@ document.getElementById('tasbih-reset').addEventListener('click', () => {
     }
 });
 
-// Objectifs 33 et 99
 document.getElementById('tasbih-target-33').addEventListener('click', () => {
     tasbihTarget = 33;
     updateTasbihGoal();
@@ -769,7 +723,6 @@ document.getElementById('tasbih-target-99').addEventListener('click', () => {
     updateTasbihGoal();
 });
 
-// Sélectionner une phrase
 document.querySelectorAll('.phrase-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.phrase-btn').forEach(b => b.classList.remove('active'));
@@ -788,7 +741,6 @@ function updateTasbihGoal() {
     const remaining = tasbihTarget - tasbihCount;
     
     if (remaining > 0) {
-        const t = translations[currentLang];
         if (currentLang === 'ar') {
             goalDiv.textContent = `الهدف: ${tasbihTarget} - متبقي: ${remaining}`;
         } else {
@@ -810,7 +762,6 @@ function showTasbihGoalReached() {
     goalDiv.style.background = 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)';
     goalDiv.style.color = 'white';
     
-    // Vibration plus longue
     if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200]);
     }
