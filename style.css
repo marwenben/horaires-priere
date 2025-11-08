@@ -746,6 +746,72 @@ footer p {
     font-weight: bold;
 }
 
+/* Couleurs Tajweed pour règles de récitation */
+.tajweed-ghunna {
+    color: #ff69b4;
+    font-weight: bold;
+}
+
+.tajweed-idghaam-ghunnah {
+    color: #ff1493;
+    font-weight: bold;
+}
+
+.tajweed-idghaam-wo-ghunnah {
+    color: #dc143c;
+    font-weight: bold;
+}
+
+.tajweed-iqlab {
+    color: #9370db;
+    font-weight: bold;
+}
+
+.tajweed-ikhfa {
+    color: #32cd32;
+    font-weight: bold;
+}
+
+.tajweed-ikhfa-meem {
+    color: #3cb371;
+    font-weight: bold;
+}
+
+.tajweed-qalqalah {
+    color: #1e90ff;
+    font-weight: bold;
+}
+
+.tajweed-madd-normal {
+    color: #ff8c00;
+    font-weight: bold;
+}
+
+.tajweed-madd-obligatory {
+    color: #ff4500;
+    font-weight: bold;
+}
+
+.tajweed-madd-permissible {
+    color: #ffa500;
+    font-weight: bold;
+}
+
+.tajweed-silent {
+    color: #999999;
+    font-size: 0.8em;
+}
+
+.tajweed-laam-shamsiyah {
+    color: #ff6347;
+    font-weight: bold;
+}
+
+.tajweed-hamzat-wasl {
+    color: #4169e1;
+    font-weight: bold;
+}
+
 /* Styles pour Tasbih */
 .tasbih-modal-content {
     max-width: 500px;
