@@ -640,33 +640,55 @@ document.getElementById('load-surah-btn').addEventListener('click', async () => 
     quranTextDiv.innerHTML = '<p class="quran-info">⏳ Chargement du Coran...</p>';
     
     try {
-        // Utiliser l'édition avec Tajweed (couleurs)
-        const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/quran-tajweed`);
-        const data = await response.json();
+        // Charger les informations de la sourate
+        const infoResponse = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
+        const infoData = await infoResponse.json();
         
-        if (data.status === 'OK') {
-            const surah = data.data;
+        // Charger le texte avec Tajweed depuis Tanzil (texte propre Uthmani)
+        const textResponse = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`);
+        const textData = await textResponse.json();
+        
+        if (infoData.status === 'OK' && textData.status === 'OK') {
+            const surahInfo = infoData.data;
+            const surahText = textData.data;
+            
             let html = `<h3 style="text-align: center; color: #1e3c72; margin-bottom: 20px;">
-                سورة ${surah.name} - ${surah.englishName}
-                <br><span style="font-size: 0.7em; color: #6c757d;">${surah.numberOfAyahs} آيات - ${surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}</span>
+                سورة ${surahInfo.name} - ${surahInfo.englishName}
+                <br><span style="font-size: 0.7em; color: #6c757d;">${surahInfo.numberOfAyahs} آيات - ${surahInfo.revelationType === 'Meccan' ? 'مكية' : 'مدنية'}</span>
             </h3>`;
             
             // Ajouter Bismillah sauf pour sourate 9 et 1
             if (surahNumber !== '9' && surahNumber !== '1') {
-                html += '<p style="text-align: center; font-size: 1.3em; color: #2a5298; margin-bottom: 25px; padding: 15px; background: rgba(42, 82, 152, 0.1); border-radius: 10px;">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>';
+                html += `<p style="text-align: center; font-size: 1.3em; color: #2a5298; margin-bottom: 25px; padding: 15px; background: rgba(42, 82, 152, 0.1); border-radius: 10px;">
+                    بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+                </p>`;
             }
             
-            // Afficher les versets avec le code HTML Tajweed
-            surah.ayahs.forEach(ayah => {
+            // Afficher les versets avec style Uthmani propre
+            surahText.ayahs.forEach(ayah => {
+                // Appliquer des couleurs basiques pour les signes importants
+                let ayahText = ayah.text;
+                
+                // Mettre en évidence certaines lettres importantes (simulation Tajweed basique)
+                // Tanwin (double voyelles) en vert clair
+                ayahText = ayahText.replace(/([ًٌٍ])/g, '<span style="color: #2ecc71;">$1</span>');
+                
+                // Sukun en bleu
+                ayahText = ayahText.replace(/([ْ])/g, '<span style="color: #3498db;">$1</span>');
+                
+                // Shaddah en rouge
+                ayahText = ayahText.replace(/([ّ])/g, '<span style="color: #e74c3c; font-weight: bold;">$1</span>');
+                
+                // Madd (alif avec hamza) en orange
+                ayahText = ayahText.replace(/(آ)/g, '<span style="color: #f39c12; font-weight: bold;">$1</span>');
+                
                 html += `<div class="ayah">
-                    <span class="ayah-number">﴿${ayah.numberInSurah}﴾</span>
-                    <span style="font-size: 1.1em;">${ayah.text}</span>
+                    <span class="ayah-number">﴿${convertToArabicNumber(ayah.numberInSurah)}﴾</span>
+                    <span style="font-size: 1.1em; line-height: 2.2;">${ayahText}</span>
                 </div>`;
             });
             
             quranTextDiv.innerHTML = html;
-            
-            // Faire défiler vers le haut
             quranTextDiv.scrollTop = 0;
         } else {
             throw new Error('Erreur API');
@@ -676,6 +698,12 @@ document.getElementById('load-surah-btn').addEventListener('click', async () => 
         quranTextDiv.innerHTML = '<p class="quran-info" style="color: #dc3545;">❌ Erreur de chargement. Veuillez réessayer.</p>';
     }
 });
+
+// Fonction pour convertir les nombres en chiffres arabes
+function convertToArabicNumber(num) {
+    const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
+}
 
 // ========== GESTION DU TASBIH ==========
 
