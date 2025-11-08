@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horaires de Prière - Montréal & Tunis</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="islamic-pattern"></div>
+    <div class="container">
+        <header>
+            <div class="language-switcher">
+                <button id="lang-fr" class="lang-btn active">Français</button>
+                <button id="lang-ar" class="lang-btn">العربية</button>
+            </div>
+            <h1 class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</h1>
+            <h1 data-fr="🕌 Horaires de Prière" data-ar="🕌 مواقيت الصلاة">🕌 Horaires de Prière</h1>
+            <p id="current-date"></p>
+        </header>
+
+        <div class="cities-container">
+            <!-- Montréal -->
+            <div class="city-card">
+                <h2 data-fr="📍 Montréal, Canada" data-ar="📍 مونتريال، كندا">📍 Montréal, Canada</h2>
+                <div id="montreal-prayers" class="prayers-list">
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
+                        <span class="prayer-time" id="montreal-fajr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Dhuhr" data-ar="الظهر">Dhuhr</span>
+                        <span class="prayer-time" id="montreal-dhuhr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Asr" data-ar="العصر">Asr</span>
+                        <span class="prayer-time" id="montreal-asr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Maghrib" data-ar="المغرب">Maghrib</span>
+                        <span class="prayer-time" id="montreal-maghrib">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Isha" data-ar="العشاء">Isha</span>
+                        <span class="prayer-time" id="montreal-isha">--:--</span>
+                    </div>
+                </div>
+                <p class="next-prayer" id="montreal-next"></p>
+            </div>
+
+            <!-- Tunis -->
+            <div class="city-card">
+                <h2 data-fr="📍 Tunis, Tunisie" data-ar="📍 تونس، تونس">📍 Tunis, Tunisie</h2>
+                <div id="tunis-prayers" class="prayers-list">
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
+                        <span class="prayer-time" id="tunis-fajr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Dhuhr" data-ar="الظهر">Dhuhr</span>
+                        <span class="prayer-time" id="tunis-dhuhr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Asr" data-ar="العصر">Asr</span>
+                        <span class="prayer-time" id="tunis-asr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Maghrib" data-ar="المغرب">Maghrib</span>
+                        <span class="prayer-time" id="tunis-maghrib">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Isha" data-ar="العشاء">Isha</span>
+                        <span class="prayer-time" id="tunis-isha">--:--</span>
+                    </div>
+                </div>
+                <p class="next-prayer" id="tunis-next"></p>
+            </div>
+        </div>
+
+        <footer>
+            <p data-fr="Mise à jour automatique toutes les minutes" data-ar="التحديث التلقائي كل دقيقة">Mise à jour automatique toutes les minutes</p>
+            <p class="last-update">
+                <span data-fr="Dernière mise à jour:" data-ar="آخر تحديث:">Dernière mise à jour:</span>
+                <span id="last-update-time"></span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
