@@ -19,19 +19,47 @@ const translations = {
         at: 'à',
         in: 'dans',
         hours: 'h',
-        minutes: 'min'
+        minutes: 'min',
+        ramadanBefore: 'Ramadan commence dans',
+        ramadanDuring: 'Nous sommes en Ramadan!',
+        ramadanAfter: 'Ramadan est terminé',
+        days: 'jours',
+        day: 'jour',
+        localTime: 'Heure locale:'
     },
     ar: {
         nextPrayer: 'الصلاة القادمة',
         at: 'في',
         in: 'بعد',
         hours: 'س',
-        minutes: 'د'
+        minutes: 'د',
+        ramadanBefore: 'رمضان يبدأ بعد',
+        ramadanDuring: 'رمضان كريم! 🌙',
+        ramadanAfter: 'انتهى رمضان',
+        days: 'أيام',
+        day: 'يوم',
+        localTime: 'الوقت المحلي:'
     }
+};
+
+// Noms des mois islamiques
+const islamicMonths = {
+    fr: ['Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani', 'Jumada al-Awwal', 
+         'Jumada al-Thani', 'Rajab', 'Sha\'ban', 'Ramadan', 'Shawwal', 
+         'Dhul-Qi\'dah', 'Dhul-Hijjah'],
+    ar: ['مُحَرَّم', 'صَفَر', 'رَبِيع ٱلْأَوَّل', 'رَبِيع ٱلثَّانِي', 'جُمَادَىٰ ٱلْأُولَىٰ',
+         'جُمَادَىٰ ٱلثَّانِيَة', 'رَجَب', 'شَعْبَان', 'رَمَضَان', 'شَوَّال',
+         'ذُو ٱلْقَعْدَة', 'ذُو ٱلْحِجَّة']
 };
 
 // Langue actuelle
 let currentLang = 'fr';
+
+// Timezones pour les villes
+const cityTimezones = {
+    montreal: 'America/Toronto',
+    tunis: 'Africa/Tunis'
+};
 
 // Fonction pour changer la langue
 function changeLanguage(lang) {
@@ -57,7 +85,9 @@ function changeLanguage(lang) {
         element.textContent = element.getAttribute(`data-${lang}`);
     });
     
-    // Recharger les informations de prière pour mettre à jour le texte
+    // Recharger les informations
+    displayIslamicDate();
+    displayRamadanCountdown();
     loadAllPrayerTimes();
 }
 
@@ -85,6 +115,132 @@ function formatDate() {
     const date = new Date();
     const locale = currentLang === 'ar' ? 'ar-TN' : 'fr-FR';
     return date.toLocaleDateString(locale, options);
+}
+
+// Fonction pour obtenir la date islamique
+async function getIslamicDate() {
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    try {
+        const response = await fetch(
+            `https://api.aladhan.com/v1/gToH/${day}-${month}-${year}`
+        );
+        
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération de la date islamique');
+        }
+
+        const data = await response.json();
+        return data.data.hijri;
+    } catch (error) {
+        console.error('Erreur date islamique:', error);
+        return null;
+    }
+}
+
+// Fonction pour afficher la date islamique
+async function displayIslamicDate() {
+    const hijriDate = await getIslamicDate();
+    if (!hijriDate) return;
+
+    const monthName = islamicMonths[currentLang][hijriDate.month.number - 1];
+    const day = currentLang === 'ar' ? convertToArabicNumerals(hijriDate.day) : hijriDate.day;
+    const year = currentLang === 'ar' ? convertToArabicNumerals(hijriDate.year) : hijriDate.year;
+    
+    const islamicDateElement = document.getElementById('islamic-date');
+    if (currentLang === 'ar') {
+        islamicDateElement.textContent = `${day} ${monthName} ${year} هـ`;
+    } else {
+        islamicDateElement.textContent = `${day} ${monthName} ${year} H`;
+    }
+}
+
+// Fonction pour convertir les chiffres en numéraux arabes
+function convertToArabicNumerals(num) {
+    const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return num.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
+}
+
+// Fonction pour calculer le compte à rebours du Ramadan
+async function displayRamadanCountdown() {
+    const hijriDate = await getIslamicDate();
+    if (!hijriDate) return;
+
+    const currentMonth = hijriDate.month.number;
+    const currentDay = parseInt(hijriDate.day);
+    const currentYear = parseInt(hijriDate.year);
+
+    const ramadanCountdownElement = document.getElementById('ramadan-countdown');
+    const ramadanTextElement = document.getElementById('ramadan-text');
+    const t = translations[currentLang];
+
+    // Ramadan est le 9ème mois
+    if (currentMonth === 9) {
+        // Pendant le Ramadan
+        ramadanCountdownElement.classList.add('during-ramadan');
+        const daysRemaining = 30 - currentDay;
+        if (currentLang === 'ar') {
+            const daysArabic = convertToArabicNumerals(daysRemaining);
+            ramadanTextElement.textContent = `${t.ramadanDuring} - متبقي ${daysArabic} ${daysRemaining > 1 ? t.days : t.day}`;
+        } else {
+            ramadanTextElement.textContent = `${t.ramadanDuring} - ${daysRemaining} ${daysRemaining > 1 ? t.days : t.day} restants`;
+        }
+    } else if (currentMonth < 9) {
+        // Avant le Ramadan
+        ramadanCountdownElement.classList.remove('during-ramadan');
+        const daysInMonths = [30, 29, 30, 29, 30, 29, 30, 29]; // Jours approximatifs jusqu'à Ramadan
+        let daysUntilRamadan = 0;
+        
+        for (let i = currentMonth - 1; i < 8; i++) {
+            if (i === currentMonth - 1) {
+                daysUntilRamadan += daysInMonths[i] - currentDay;
+            } else {
+                daysUntilRamadan += daysInMonths[i];
+            }
+        }
+
+        if (currentLang === 'ar') {
+            const daysArabic = convertToArabicNumerals(daysUntilRamadan);
+            ramadanTextElement.textContent = `${t.ramadanBefore} ${daysArabic} ${daysUntilRamadan > 1 ? t.days : t.day} 🌙`;
+        } else {
+            ramadanTextElement.textContent = `${t.ramadanBefore} ${daysUntilRamadan} ${daysUntilRamadan > 1 ? t.days : t.day} 🌙`;
+        }
+    } else {
+        // Après le Ramadan
+        ramadanCountdownElement.classList.remove('during-ramadan');
+        const nextRamadanYear = currentYear + 1;
+        const daysUntilNextRamadan = 365 - ((currentMonth - 9) * 30 + currentDay);
+        
+        if (currentLang === 'ar') {
+            const daysArabic = convertToArabicNumerals(daysUntilNextRamadan);
+            ramadanTextElement.textContent = `رمضان القادم بعد ${daysArabic} ${t.days} تقريباً`;
+        } else {
+            ramadanTextElement.textContent = `Prochain Ramadan dans environ ${daysUntilNextRamadan} ${t.days}`;
+        }
+    }
+}
+
+// Fonction pour afficher l'heure locale
+function displayLocalTime() {
+    const montrealTime = new Date().toLocaleTimeString('fr-FR', {
+        timeZone: cityTimezones.montreal,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    
+    const tunisTime = new Date().toLocaleTimeString('fr-FR', {
+        timeZone: cityTimezones.tunis,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    
+    document.getElementById('montreal-time').textContent = montrealTime;
+    document.getElementById('tunis-time').textContent = tunisTime;
 }
 
 // Fonction pour obtenir les heures de prière
@@ -237,11 +393,25 @@ async function loadAllPrayerTimes() {
     const tunisTimings = await getPrayerTimes('tunis');
     displayPrayerTimes('tunis', tunisTimings);
     
+    // Afficher la date islamique
+    await displayIslamicDate();
+    
+    // Afficher le compte à rebours Ramadan
+    await displayRamadanCountdown();
+    
+    // Afficher l'heure locale
+    displayLocalTime();
+    
     updateLastUpdateTime();
 }
 
 // Charger les données au démarrage
 loadAllPrayerTimes();
+
+// Mettre à jour l'heure locale toutes les secondes
+setInterval(() => {
+    displayLocalTime();
+}, 1000);
 
 // Mettre à jour toutes les minutes
 setInterval(() => {
