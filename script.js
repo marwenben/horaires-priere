@@ -1,15 +1,193 @@
-// Configuration des villes
-const cities = {
-    montreal: {
+// Base de données des villes avec leurs informations
+const citiesDatabase = {
+    'montreal-ca': {
         name: 'Montréal',
         country: 'CA',
-        method: 2 // ISNA (Islamic Society of North America)
+        method: 2,
+        timezone: 'America/Toronto',
+        displayName: { fr: '🇨🇦 Montréal, Canada', ar: '🇨🇦 مونتريال، كندا' }
     },
-    tunis: {
+    'tunis-tn': {
         name: 'Tunis',
         country: 'TN',
-        method: 5 // Muslim World League
+        method: 5,
+        timezone: 'Africa/Tunis',
+        displayName: { fr: '🇹🇳 Tunis, Tunisie', ar: '🇹🇳 تونس، تونس' }
+    },
+    'algiers-dz': {
+        name: 'Algiers',
+        country: 'DZ',
+        method: 5,
+        timezone: 'Africa/Algiers',
+        displayName: { fr: '🇩🇿 Alger, Algérie', ar: '🇩🇿 الجزائر، الجزائر' }
+    },
+    'mecca-sa': {
+        name: 'Mecca',
+        country: 'SA',
+        method: 4,
+        timezone: 'Asia/Riyadh',
+        displayName: { fr: '🇸🇦 La Mecque, Arabie Saoudite', ar: '🇸🇦 مكة المكرمة، السعودية' }
+    },
+    'medina-sa': {
+        name: 'Medina',
+        country: 'SA',
+        method: 4,
+        timezone: 'Asia/Riyadh',
+        displayName: { fr: '🇸🇦 Médine, Arabie Saoudite', ar: '🇸🇦 المدينة المنورة، السعودية' }
+    },
+    'riyadh-sa': {
+        name: 'Riyadh',
+        country: 'SA',
+        method: 4,
+        timezone: 'Asia/Riyadh',
+        displayName: { fr: '🇸🇦 Riyad, Arabie Saoudite', ar: '🇸🇦 الرياض، السعودية' }
+    },
+    'jeddah-sa': {
+        name: 'Jeddah',
+        country: 'SA',
+        method: 4,
+        timezone: 'Asia/Riyadh',
+        displayName: { fr: '🇸🇦 Jeddah, Arabie Saoudite', ar: '🇸🇦 جدة، السعودية' }
+    },
+    'cairo-eg': {
+        name: 'Cairo',
+        country: 'EG',
+        method: 5,
+        timezone: 'Africa/Cairo',
+        displayName: { fr: '🇪🇬 Le Caire, Égypte', ar: '🇪🇬 القاهرة، مصر' }
+    },
+    'dubai-ae': {
+        name: 'Dubai',
+        country: 'AE',
+        method: 4,
+        timezone: 'Asia/Dubai',
+        displayName: { fr: '🇦🇪 Dubaï, Émirats Arabes Unis', ar: '🇦🇪 دبي، الإمارات' }
+    },
+    'abudhabi-ae': {
+        name: 'Abu Dhabi',
+        country: 'AE',
+        method: 4,
+        timezone: 'Asia/Dubai',
+        displayName: { fr: '🇦🇪 Abu Dhabi, Émirats Arabes Unis', ar: '🇦🇪 أبو ظبي، الإمارات' }
+    },
+    'doha-qa': {
+        name: 'Doha',
+        country: 'QA',
+        method: 4,
+        timezone: 'Asia/Qatar',
+        displayName: { fr: '🇶🇦 Doha, Qatar', ar: '🇶🇦 الدوحة، قطر' }
+    },
+    'kuwait-kw': {
+        name: 'Kuwait City',
+        country: 'KW',
+        method: 4,
+        timezone: 'Asia/Kuwait',
+        displayName: { fr: '🇰🇼 Koweït, Koweït', ar: '🇰🇼 الكويت، الكويت' }
+    },
+    'casablanca-ma': {
+        name: 'Casablanca',
+        country: 'MA',
+        method: 5,
+        timezone: 'Africa/Casablanca',
+        displayName: { fr: '🇲🇦 Casablanca, Maroc', ar: '🇲🇦 الدار البيضاء، المغرب' }
+    },
+    'rabat-ma': {
+        name: 'Rabat',
+        country: 'MA',
+        method: 5,
+        timezone: 'Africa/Casablanca',
+        displayName: { fr: '🇲🇦 Rabat, Maroc', ar: '🇲🇦 الرباط، المغرب' }
+    },
+    'istanbul-tr': {
+        name: 'Istanbul',
+        country: 'TR',
+        method: 1,
+        timezone: 'Europe/Istanbul',
+        displayName: { fr: '🇹🇷 Istanbul, Turquie', ar: '🇹🇷 إسطنبول، تركيا' }
+    },
+    'ankara-tr': {
+        name: 'Ankara',
+        country: 'TR',
+        method: 1,
+        timezone: 'Europe/Istanbul',
+        displayName: { fr: '🇹🇷 Ankara, Turquie', ar: '🇹🇷 أنقرة، تركيا' }
+    },
+    'paris-fr': {
+        name: 'Paris',
+        country: 'FR',
+        method: 2,
+        timezone: 'Europe/Paris',
+        displayName: { fr: '🇫🇷 Paris, France', ar: '🇫🇷 باريس، فرنسا' }
+    },
+    'london-gb': {
+        name: 'London',
+        country: 'GB',
+        method: 2,
+        timezone: 'Europe/London',
+        displayName: { fr: '🇬🇧 Londres, Royaume-Uni', ar: '🇬🇧 لندن، بريطانيا' }
+    },
+    'newyork-us': {
+        name: 'New York',
+        country: 'US',
+        method: 2,
+        timezone: 'America/New_York',
+        displayName: { fr: '🇺🇸 New York, États-Unis', ar: '🇺🇸 نيويورك، أمريكا' }
+    },
+    'toronto-ca': {
+        name: 'Toronto',
+        country: 'CA',
+        method: 2,
+        timezone: 'America/Toronto',
+        displayName: { fr: '🇨🇦 Toronto, Canada', ar: '🇨🇦 تورونتو، كندا' }
+    },
+    'ottawa-ca': {
+        name: 'Ottawa',
+        country: 'CA',
+        method: 2,
+        timezone: 'America/Toronto',
+        displayName: { fr: '🇨🇦 Ottawa, Canada', ar: '🇨🇦 أوتاوا، كندا' }
+    },
+    'jakarta-id': {
+        name: 'Jakarta',
+        country: 'ID',
+        method: 1,
+        timezone: 'Asia/Jakarta',
+        displayName: { fr: '🇮🇩 Jakarta, Indonésie', ar: '🇮🇩 جاكرتا، إندونيسيا' }
+    },
+    'kualalumpur-my': {
+        name: 'Kuala Lumpur',
+        country: 'MY',
+        method: 1,
+        timezone: 'Asia/Kuala_Lumpur',
+        displayName: { fr: '🇲🇾 Kuala Lumpur, Malaisie', ar: '🇲🇾 كوالالمبور، ماليزيا' }
+    },
+    'karachi-pk': {
+        name: 'Karachi',
+        country: 'PK',
+        method: 1,
+        timezone: 'Asia/Karachi',
+        displayName: { fr: '🇵🇰 Karachi, Pakistan', ar: '🇵🇰 كراتشي، باكستان' }
+    },
+    'lahore-pk': {
+        name: 'Lahore',
+        country: 'PK',
+        method: 1,
+        timezone: 'Asia/Karachi',
+        displayName: { fr: '🇵🇰 Lahore, Pakistan', ar: '🇵🇰 لاهور، باكستان' }
+    },
+    'dhaka-bd': {
+        name: 'Dhaka',
+        country: 'BD',
+        method: 1,
+        timezone: 'Asia/Dhaka',
+        displayName: { fr: '🇧🇩 Dhaka, Bangladesh', ar: '🇧🇩 دكا، بنغلاديش' }
     }
+};
+
+// Villes actuellement sélectionnées
+let selectedCities = {
+    city1: 'montreal-ca',
+    city2: 'tunis-tn'
 };
 
 // Traductions
@@ -55,12 +233,6 @@ const islamicMonths = {
 // Langue actuelle
 let currentLang = 'fr';
 
-// Timezones pour les villes
-const cityTimezones = {
-    montreal: 'America/Toronto',
-    tunis: 'Africa/Tunis'
-};
-
 // Fonction pour changer la langue
 function changeLanguage(lang) {
     currentLang = lang;
@@ -94,6 +266,32 @@ function changeLanguage(lang) {
 // Écouteurs d'événements pour les boutons de langue
 document.getElementById('lang-fr').addEventListener('click', () => changeLanguage('fr'));
 document.getElementById('lang-ar').addEventListener('click', () => changeLanguage('ar'));
+
+// Écouteurs d'événements pour les sélecteurs de villes
+document.getElementById('city1-select').addEventListener('change', (e) => {
+    selectedCities.city1 = e.target.value;
+    updateCityDisplay('city1');
+});
+
+document.getElementById('city2-select').addEventListener('change', (e) => {
+    selectedCities.city2 = e.target.value;
+    updateCityDisplay('city2');
+});
+
+// Fonction pour mettre à jour l'affichage d'une ville
+async function updateCityDisplay(cityKey) {
+    const cityId = selectedCities[cityKey];
+    const cityData = citiesDatabase[cityId];
+    
+    // Mettre à jour le nom de la ville
+    document.getElementById(`${cityKey}-name`).textContent = cityData.displayName[currentLang];
+    
+    // Charger les horaires de prière
+    const timings = await getPrayerTimesForCity(cityId);
+    if (timings) {
+        displayPrayerTimes(cityKey, timings);
+    }
+}
 
 // Noms des prières en français
 const prayerNames = {
@@ -225,27 +423,43 @@ async function displayRamadanCountdown() {
 
 // Fonction pour afficher l'heure locale
 function displayLocalTime() {
-    const montrealTime = new Date().toLocaleTimeString('fr-FR', {
-        timeZone: cityTimezones.montreal,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
+    // Ville 1
+    const city1Id = selectedCities.city1;
+    const city1Data = citiesDatabase[city1Id];
+    if (city1Data) {
+        const city1Time = new Date().toLocaleTimeString('fr-FR', {
+            timeZone: city1Data.timezone,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('city1-time').textContent = city1Time;
+    }
     
-    const tunisTime = new Date().toLocaleTimeString('fr-FR', {
-        timeZone: cityTimezones.tunis,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
-    
-    document.getElementById('montreal-time').textContent = montrealTime;
-    document.getElementById('tunis-time').textContent = tunisTime;
+    // Ville 2
+    const city2Id = selectedCities.city2;
+    const city2Data = citiesDatabase[city2Id];
+    if (city2Data) {
+        const city2Time = new Date().toLocaleTimeString('fr-FR', {
+            timeZone: city2Data.timezone,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('city2-time').textContent = city2Time;
+    }
 }
 
 // Fonction pour obtenir les heures de prière
 async function getPrayerTimes(cityKey) {
-    const city = cities[cityKey];
+    const cityId = selectedCities[cityKey];
+    return await getPrayerTimesForCity(cityId);
+}
+
+async function getPrayerTimesForCity(cityId) {
+    const city = citiesDatabase[cityId];
+    if (!city) return null;
+    
     const date = new Date();
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -288,8 +502,15 @@ function displayPrayerTimes(cityKey, timings) {
 
 // Fonction pour mettre en évidence la prière actuelle
 function highlightCurrentPrayer(cityKey, timings) {
+    // Obtenir l'heure locale de la ville spécifique
+    const cityId = selectedCities[cityKey];
+    const cityData = citiesDatabase[cityId];
+    if (!cityData) return;
+    
+    const timezone = cityData.timezone;
     const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const cityTime = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
+    const currentTime = cityTime.getHours() * 60 + cityTime.getMinutes();
     
     const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
     let currentPrayer = null;
@@ -385,13 +606,12 @@ function updateLastUpdateTime() {
 async function loadAllPrayerTimes() {
     document.getElementById('current-date').textContent = formatDate();
     
-    // Charger les heures pour Montréal
-    const montrealTimings = await getPrayerTimes('montreal');
-    displayPrayerTimes('montreal', montrealTimings);
+    // Charger les heures pour les deux villes
+    const city1Timings = await getPrayerTimes('city1');
+    displayPrayerTimes('city1', city1Timings);
     
-    // Charger les heures pour Tunis
-    const tunisTimings = await getPrayerTimes('tunis');
-    displayPrayerTimes('tunis', tunisTimings);
+    const city2Timings = await getPrayerTimes('city2');
+    displayPrayerTimes('city2', city2Timings);
     
     // Afficher la date islamique
     await displayIslamicDate();
@@ -420,13 +640,13 @@ setInterval(() => {
 
 // Mettre à jour l'affichage de la prière actuelle toutes les 10 secondes
 setInterval(async () => {
-    const montrealTimings = await getPrayerTimes('montreal');
-    if (montrealTimings) {
-        highlightCurrentPrayer('montreal', montrealTimings);
+    const city1Timings = await getPrayerTimes('city1');
+    if (city1Timings) {
+        highlightCurrentPrayer('city1', city1Timings);
     }
     
-    const tunisTimings = await getPrayerTimes('tunis');
-    if (tunisTimings) {
-        highlightCurrentPrayer('tunis', tunisTimings);
+    const city2Timings = await getPrayerTimes('city2');
+    if (city2Timings) {
+        highlightCurrentPrayer('city2', city2Timings);
     }
 }, 10000); // 10000 ms = 10 secondes
