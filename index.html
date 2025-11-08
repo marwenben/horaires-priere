@@ -17,6 +17,19 @@
                 <button id="lang-fr" class="lang-btn active">Français</button>
                 <button id="lang-ar" class="lang-btn">العربية</button>
             </div>
+            
+            <!-- Icônes Coran et Tasbih -->
+            <div class="islamic-tools">
+                <button id="quran-btn" class="tool-btn" title="Coran (Hafs)">
+                    <span class="tool-icon">📖</span>
+                    <span data-fr="Coran" data-ar="القرآن">Coran</span>
+                </button>
+                <button id="tasbih-btn" class="tool-btn" title="Tasbih">
+                    <span class="tool-icon">📿</span>
+                    <span data-fr="Tasbih" data-ar="التسبيح">Tasbih</span>
+                </button>
+            </div>
+            
             <h1 class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</h1>
             <h1 data-fr="🕌 Horaires de Prière" data-ar="🕌 مواقيت الصلاة">🕌 Horaires de Prière</h1>
             <p id="current-date"></p>
@@ -161,6 +174,377 @@
                     </div>
                 </div>
                 <p class="next-prayer" id="city2-next"></p>
+            </div>
+        </div>
+
+        <!-- Modal Coran -->
+        <div id="quran-modal" class="modal">
+            <div class="modal-content quran-modal-content">
+                <div class="modal-header">
+                    <h2>
+                        <span data-fr="📖 Saint Coran - Riwayat Hafs" data-ar="📖 القرآن الكريم - رواية حفص">📖 Saint Coran - Riwayat Hafs</span>
+                    </h2>
+                    <button class="close-btn" id="close-quran">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="surah-selector">
+                        <label data-fr="Choisir une Sourate:" data-ar="اختر سورة:">Choisir une Sourate:</label>
+                        <select id="surah-select" class="quran-select">
+                            <option value="1">1. الفاتحة - Al-Fatiha</option>
+                            <option value="2">2. البقرة - Al-Baqara</option>
+                            <option value="3">3. آل عمران - Ali 'Imran</option>
+                            <option value="18">18. الكهف - Al-Kahf</option>
+                            <option value="36">36. يس - Ya-Sin</option>
+                            <option value="55">55. الرحمن - Ar-Rahman</option>
+                            <option value="56">56. الواقعة - Al-Waqi'a</option>
+                            <option value="67">67. الملك - Al-Mulk</option>
+                            <option value="78">78. النبإ - An-Naba</option>
+                            <option value="112">112. الإخلاص - Al-Ikhlas</option>
+                            <option value="113">113. الفلق - Al-Falaq</option>
+                            <option value="114">114. الناس - An-Nas</option>
+                        </select>
+                        <button id="load-surah-btn" class="load-btn" data-fr="Charger" data-ar="تحميل">Charger</button>
+                    </div>
+                    <div id="quran-text" class="quran-text">
+                        <p class="quran-info" data-fr="Sélectionnez une sourate ci-dessus" data-ar="اختر سورة من الأعلى">Sélectionnez une sourate ci-dessus</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Tasbih -->
+        <div id="tasbih-modal" class="modal">
+            <div class="modal-content tasbih-modal-content">
+                <div class="modal-header">
+                    <h2>
+                        <span data-fr="📿 Tasbih Électronique" data-ar="📿 المسبحة الإلكترونية">📿 Tasbih Électronique</span>
+                    </h2>
+                    <button class="close-btn" id="close-tasbih">&times;</button>
+                </div>
+                <div class="modal-body tasbih-body">
+                    <div class="tasbih-display">
+                        <div class="tasbih-counter" id="tasbih-count">0</div>
+                        <div class="tasbih-label" data-fr="fois" data-ar="مرة">fois</div>
+                    </div>
+                    
+                    <div class="tasbih-phrases">
+                        <button class="phrase-btn active" data-phrase="سبحان الله">
+                            <span class="arabic-text">سُبْحَانَ ٱللَّٰهِ</span>
+                            <span class="translation">Subhan Allah</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="الحمد لله">
+                            <span class="arabic-text">ٱلْحَمْدُ لِلَّٰهِ</span>
+                            <span class="translation">Alhamdulillah</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="الله أكبر">
+                            <span class="arabic-text">ٱللَّٰهُ أَكْبَرُ</span>
+                            <span class="translation">Allahu Akbar</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="لا إله إلا الله">
+                            <span class="arabic-text">لَا إِلَٰهَ إِلَّا ٱللَّٰهُ</span>
+                            <span class="translation">La ilaha illa Allah</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="استغفر الله">
+                            <span class="arabic-text">أَسْتَغْفِرُ ٱللَّٰهَ</span>
+                            <span class="translation">Astaghfirullah</span>
+                        </button>
+                    </div>
+                    
+                    <div class="current-phrase" id="current-phrase">سُبْحَانَ ٱللَّٰهِ</div>
+                    
+                    <button id="tasbih-increment" class="tasbih-btn">
+                        <span data-fr="Appuyez pour compter" data-ar="اضغط للعد">Appuyez pour compter</span>
+                    </button>
+                    
+                    <div class="tasbih-actions">
+                        <button id="tasbih-reset" class="action-btn reset-btn" data-fr="Réinitialiser" data-ar="إعادة تعيين">Réinitialiser</button>
+                        <button id="tasbih-target-33" class="action-btn target-btn">33</button>
+                        <button id="tasbih-target-99" class="action-btn target-btn">99</button>
+                    </div>
+                    
+                    <div class="tasbih-goal" id="tasbih-goal"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p data-fr="Mise à jour automatique toutes les minutes" data-ar="التحديث التلقائي كل دقيقة">Mise à jour automatique toutes les minutes</p>
+            <p class="last-update">
+                <span data-fr="Dernière mise à jour:" data-ar="آخر تحديث:">Dernière mise à jour:</span>
+                <span id="last-update-time"></span>
+            </p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horaires de Prière - Montréal & Tunis</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="islamic-pattern"></div>
+    <div class="container">
+        <header>
+            <div class="language-switcher">
+                <button id="lang-fr" class="lang-btn active">Français</button>
+                <button id="lang-ar" class="lang-btn">العربية</button>
+            </div>
+            
+            <!-- Icônes Coran et Tasbih -->
+            <div class="islamic-tools">
+                <button id="quran-btn" class="tool-btn" title="Coran (Hafs)">
+                    <span class="tool-icon">📖</span>
+                    <span data-fr="Coran" data-ar="القرآن">Coran</span>
+                </button>
+                <button id="tasbih-btn" class="tool-btn" title="Tasbih">
+                    <span class="tool-icon">📿</span>
+                    <span data-fr="Tasbih" data-ar="التسبيح">Tasbih</span>
+                </button>
+            </div>
+            
+            <h1 class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</h1>
+            <h1 data-fr="🕌 Horaires de Prière" data-ar="🕌 مواقيت الصلاة">🕌 Horaires de Prière</h1>
+            <p id="current-date"></p>
+            <p id="islamic-date" class="islamic-date"></p>
+            
+            <!-- Sélecteurs de villes -->
+            <div class="city-selectors">
+                <div class="selector-group">
+                    <label data-fr="Ville 1:" data-ar="المدينة ١:">Ville 1:</label>
+                    <select id="city1-select" class="city-select">
+                        <option value="montreal-ca">🇨🇦 Montréal, Canada</option>
+                        <option value="tunis-tn">🇹🇳 Tunis, Tunisie</option>
+                        <option value="algiers-dz">🇩🇿 Alger, Algérie</option>
+                        <option value="mecca-sa">🇸🇦 La Mecque, Arabie Saoudite</option>
+                        <option value="medina-sa">🇸🇦 Médine, Arabie Saoudite</option>
+                        <option value="riyadh-sa">🇸🇦 Riyad, Arabie Saoudite</option>
+                        <option value="jeddah-sa">🇸🇦 Jeddah, Arabie Saoudite</option>
+                        <option value="cairo-eg">🇪🇬 Le Caire, Égypte</option>
+                        <option value="dubai-ae">🇦🇪 Dubaï, Émirats Arabes Unis</option>
+                        <option value="abudhabi-ae">🇦🇪 Abu Dhabi, Émirats Arabes Unis</option>
+                        <option value="doha-qa">🇶🇦 Doha, Qatar</option>
+                        <option value="kuwait-kw">🇰🇼 Koweït, Koweït</option>
+                        <option value="casablanca-ma">🇲🇦 Casablanca, Maroc</option>
+                        <option value="rabat-ma">🇲🇦 Rabat, Maroc</option>
+                        <option value="istanbul-tr">🇹🇷 Istanbul, Turquie</option>
+                        <option value="ankara-tr">🇹🇷 Ankara, Turquie</option>
+                        <option value="paris-fr">🇫🇷 Paris, France</option>
+                        <option value="london-gb">🇬🇧 Londres, Royaume-Uni</option>
+                        <option value="newyork-us">🇺🇸 New York, États-Unis</option>
+                        <option value="toronto-ca">🇨🇦 Toronto, Canada</option>
+                        <option value="ottawa-ca">🇨🇦 Ottawa, Canada</option>
+                        <option value="jakarta-id">🇮🇩 Jakarta, Indonésie</option>
+                        <option value="kualalumpur-my">🇲🇾 Kuala Lumpur, Malaisie</option>
+                        <option value="karachi-pk">🇵🇰 Karachi, Pakistan</option>
+                        <option value="lahore-pk">🇵🇰 Lahore, Pakistan</option>
+                        <option value="dhaka-bd">🇧🇩 Dhaka, Bangladesh</option>
+                    </select>
+                </div>
+                
+                <div class="selector-group">
+                    <label data-fr="Ville 2:" data-ar="المدينة ٢:">Ville 2:</label>
+                    <select id="city2-select" class="city-select">
+                        <option value="montreal-ca">🇨🇦 Montréal, Canada</option>
+                        <option value="tunis-tn" selected>🇹🇳 Tunis, Tunisie</option>
+                        <option value="algiers-dz">🇩🇿 Alger, Algérie</option>
+                        <option value="mecca-sa">🇸🇦 La Mecque, Arabie Saoudite</option>
+                        <option value="medina-sa">🇸🇦 Médine, Arabie Saoudite</option>
+                        <option value="riyadh-sa">🇸🇦 Riyad, Arabie Saoudite</option>
+                        <option value="jeddah-sa">🇸🇦 Jeddah, Arabie Saoudite</option>
+                        <option value="cairo-eg">🇪🇬 Le Caire, Égypte</option>
+                        <option value="dubai-ae">🇦🇪 Dubaï, Émirats Arabes Unis</option>
+                        <option value="abudhabi-ae">🇦🇪 Abu Dhabi, Émirats Arabes Unis</option>
+                        <option value="doha-qa">🇶🇦 Doha, Qatar</option>
+                        <option value="kuwait-kw">🇰🇼 Koweït, Koweït</option>
+                        <option value="casablanca-ma">🇲🇦 Casablanca, Maroc</option>
+                        <option value="rabat-ma">🇲🇦 Rabat, Maroc</option>
+                        <option value="istanbul-tr">🇹🇷 Istanbul, Turquie</option>
+                        <option value="ankara-tr">🇹🇷 Ankara, Turquie</option>
+                        <option value="paris-fr">🇫🇷 Paris, France</option>
+                        <option value="london-gb">🇬🇧 Londres, Royaume-Uni</option>
+                        <option value="newyork-us">🇺🇸 New York, États-Unis</option>
+                        <option value="toronto-ca">🇨🇦 Toronto, Canada</option>
+                        <option value="ottawa-ca">🇨🇦 Ottawa, Canada</option>
+                        <option value="jakarta-id">🇮🇩 Jakarta, Indonésie</option>
+                        <option value="kualalumpur-my">🇲🇾 Kuala Lumpur, Malaisie</option>
+                        <option value="karachi-pk">🇵🇰 Karachi, Pakistan</option>
+                        <option value="lahore-pk">🇵🇰 Lahore, Pakistan</option>
+                        <option value="dhaka-bd">🇧🇩 Dhaka, Bangladesh</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Compte à rebours Ramadan -->
+            <div id="ramadan-countdown" class="ramadan-countdown">
+                <div class="ramadan-icon">🌙</div>
+                <p id="ramadan-text"></p>
+            </div>
+        </header>
+
+        <div class="cities-container">
+            <!-- Ville 1 -->
+            <div class="city-card" id="city1-card">
+                <h2 id="city1-name">📍 Montréal, Canada</h2>
+                <div class="local-time">
+                    <span class="clock-icon">🕐</span>
+                    <span data-fr="Heure locale:" data-ar="الوقت المحلي:">Heure locale:</span>
+                    <span id="city1-time" class="time-display">--:--:--</span>
+                </div>
+                <div id="city1-prayers" class="prayers-list">
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
+                        <span class="prayer-time" id="city1-fajr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Dhuhr" data-ar="الظهر">Dhuhr</span>
+                        <span class="prayer-time" id="city1-dhuhr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Asr" data-ar="العصر">Asr</span>
+                        <span class="prayer-time" id="city1-asr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Maghrib" data-ar="المغرب">Maghrib</span>
+                        <span class="prayer-time" id="city1-maghrib">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Isha" data-ar="العشاء">Isha</span>
+                        <span class="prayer-time" id="city1-isha">--:--</span>
+                    </div>
+                </div>
+                <p class="next-prayer" id="city1-next"></p>
+            </div>
+
+            <!-- Ville 2 -->
+            <div class="city-card" id="city2-card">
+                <h2 id="city2-name">📍 Tunis, Tunisie</h2>
+                <div class="local-time">
+                    <span class="clock-icon">🕐</span>
+                    <span data-fr="Heure locale:" data-ar="الوقت المحلي:">Heure locale:</span>
+                    <span id="city2-time" class="time-display">--:--:--</span>
+                </div>
+                <div id="city2-prayers" class="prayers-list">
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
+                        <span class="prayer-time" id="city2-fajr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Dhuhr" data-ar="الظهر">Dhuhr</span>
+                        <span class="prayer-time" id="city2-dhuhr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Asr" data-ar="العصر">Asr</span>
+                        <span class="prayer-time" id="city2-asr">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Maghrib" data-ar="المغرب">Maghrib</span>
+                        <span class="prayer-time" id="city2-maghrib">--:--</span>
+                    </div>
+                    <div class="prayer-item">
+                        <span class="prayer-name" data-fr="Isha" data-ar="العشاء">Isha</span>
+                        <span class="prayer-time" id="city2-isha">--:--</span>
+                    </div>
+                </div>
+                <p class="next-prayer" id="city2-next"></p>
+            </div>
+        </div>
+
+        <!-- Modal Coran -->
+        <div id="quran-modal" class="modal">
+            <div class="modal-content quran-modal-content">
+                <div class="modal-header">
+                    <h2>
+                        <span data-fr="📖 Saint Coran - Riwayat Hafs" data-ar="📖 القرآن الكريم - رواية حفص">📖 Saint Coran - Riwayat Hafs</span>
+                    </h2>
+                    <button class="close-btn" id="close-quran">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="surah-selector">
+                        <label data-fr="Choisir une Sourate:" data-ar="اختر سورة:">Choisir une Sourate:</label>
+                        <select id="surah-select" class="quran-select">
+                            <option value="1">1. الفاتحة - Al-Fatiha</option>
+                            <option value="2">2. البقرة - Al-Baqara</option>
+                            <option value="3">3. آل عمران - Ali 'Imran</option>
+                            <option value="18">18. الكهف - Al-Kahf</option>
+                            <option value="36">36. يس - Ya-Sin</option>
+                            <option value="55">55. الرحمن - Ar-Rahman</option>
+                            <option value="56">56. الواقعة - Al-Waqi'a</option>
+                            <option value="67">67. الملك - Al-Mulk</option>
+                            <option value="78">78. النبإ - An-Naba</option>
+                            <option value="112">112. الإخلاص - Al-Ikhlas</option>
+                            <option value="113">113. الفلق - Al-Falaq</option>
+                            <option value="114">114. الناس - An-Nas</option>
+                        </select>
+                        <button id="load-surah-btn" class="load-btn" data-fr="Charger" data-ar="تحميل">Charger</button>
+                    </div>
+                    <div id="quran-text" class="quran-text">
+                        <p class="quran-info" data-fr="Sélectionnez une sourate ci-dessus" data-ar="اختر سورة من الأعلى">Sélectionnez une sourate ci-dessus</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Tasbih -->
+        <div id="tasbih-modal" class="modal">
+            <div class="modal-content tasbih-modal-content">
+                <div class="modal-header">
+                    <h2>
+                        <span data-fr="📿 Tasbih Électronique" data-ar="📿 المسبحة الإلكترونية">📿 Tasbih Électronique</span>
+                    </h2>
+                    <button class="close-btn" id="close-tasbih">&times;</button>
+                </div>
+                <div class="modal-body tasbih-body">
+                    <div class="tasbih-display">
+                        <div class="tasbih-counter" id="tasbih-count">0</div>
+                        <div class="tasbih-label" data-fr="fois" data-ar="مرة">fois</div>
+                    </div>
+                    
+                    <div class="tasbih-phrases">
+                        <button class="phrase-btn active" data-phrase="سبحان الله">
+                            <span class="arabic-text">سُبْحَانَ ٱللَّٰهِ</span>
+                            <span class="translation">Subhan Allah</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="الحمد لله">
+                            <span class="arabic-text">ٱلْحَمْدُ لِلَّٰهِ</span>
+                            <span class="translation">Alhamdulillah</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="الله أكبر">
+                            <span class="arabic-text">ٱللَّٰهُ أَكْبَرُ</span>
+                            <span class="translation">Allahu Akbar</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="لا إله إلا الله">
+                            <span class="arabic-text">لَا إِلَٰهَ إِلَّا ٱللَّٰهُ</span>
+                            <span class="translation">La ilaha illa Allah</span>
+                        </button>
+                        <button class="phrase-btn" data-phrase="استغفر الله">
+                            <span class="arabic-text">أَسْتَغْفِرُ ٱللَّٰهَ</span>
+                            <span class="translation">Astaghfirullah</span>
+                        </button>
+                    </div>
+                    
+                    <div class="current-phrase" id="current-phrase">سُبْحَانَ ٱللَّٰهِ</div>
+                    
+                    <button id="tasbih-increment" class="tasbih-btn">
+                        <span data-fr="Appuyez pour compter" data-ar="اضغط للعد">Appuyez pour compter</span>
+                    </button>
+                    
+                    <div class="tasbih-actions">
+                        <button id="tasbih-reset" class="action-btn reset-btn" data-fr="Réinitialiser" data-ar="إعادة تعيين">Réinitialiser</button>
+                        <button id="tasbih-target-33" class="action-btn target-btn">33</button>
+                        <button id="tasbih-target-99" class="action-btn target-btn">99</button>
+                    </div>
+                    
+                    <div class="tasbih-goal" id="tasbih-goal"></div>
+                </div>
             </div>
         </div>
 
