@@ -755,24 +755,6 @@ footer p {
     text-align: center;
 }
 
-.tasbih-display {
-    margin-bottom: 30px;
-}
-
-.tasbih-counter {
-    font-size: 5em;
-    font-weight: bold;
-    color: #1e3c72;
-    font-family: 'Courier New', monospace;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.tasbih-label {
-    font-size: 1.2em;
-    color: #6c757d;
-    margin-top: 10px;
-}
-
 .tasbih-phrases {
     display: flex;
     flex-direction: column;
@@ -823,18 +805,21 @@ footer p {
 }
 
 .tasbih-btn {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     color: white;
     border: 8px solid #ffd700;
-    font-size: 1.2em;
-    font-weight: bold;
     cursor: pointer;
     margin: 20px auto;
     transition: all 0.2s ease;
     box-shadow: 0 10px 30px rgba(30, 60, 114, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .tasbih-btn:hover {
@@ -845,6 +830,21 @@ footer p {
 .tasbih-btn:active {
     transform: scale(0.95);
     box-shadow: 0 5px 20px rgba(30, 60, 114, 0.6);
+}
+
+.tasbih-btn .tasbih-counter {
+    font-size: 4em;
+    font-weight: bold;
+    color: #ffd700;
+    font-family: 'Courier New', monospace;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    line-height: 1;
+}
+
+.tasbih-btn .tasbih-label {
+    font-size: 1em;
+    color: white;
+    opacity: 0.9;
 }
 
 .tasbih-actions {
@@ -916,13 +916,16 @@ footer p {
         padding: 20px;
     }
     
-    .tasbih-counter {
-        font-size: 3.5em;
+    .tasbih-btn {
+        width: 200px;
+        height: 200px;
     }
     
-    .tasbih-btn {
-        width: 150px;
-        height: 150px;
-        font-size: 1em;
+    .tasbih-btn .tasbih-counter {
+        font-size: 3em;
+    }
+    
+    .tasbih-btn .tasbih-label {
+        font-size: 0.9em;
     }
 }
