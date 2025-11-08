@@ -20,12 +20,24 @@
             <h1 class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</h1>
             <h1 data-fr="🕌 Horaires de Prière" data-ar="🕌 مواقيت الصلاة">🕌 Horaires de Prière</h1>
             <p id="current-date"></p>
+            <p id="islamic-date" class="islamic-date"></p>
+            
+            <!-- Compte à rebours Ramadan -->
+            <div id="ramadan-countdown" class="ramadan-countdown">
+                <div class="ramadan-icon">🌙</div>
+                <p id="ramadan-text"></p>
+            </div>
         </header>
 
         <div class="cities-container">
             <!-- Montréal -->
             <div class="city-card">
                 <h2 data-fr="📍 Montréal, Canada" data-ar="📍 مونتريال، كندا">📍 Montréal, Canada</h2>
+                <div class="local-time">
+                    <span class="clock-icon">🕐</span>
+                    <span data-fr="Heure locale:" data-ar="الوقت المحلي:">Heure locale:</span>
+                    <span id="montreal-time" class="time-display">--:--:--</span>
+                </div>
                 <div id="montreal-prayers" class="prayers-list">
                     <div class="prayer-item">
                         <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
@@ -54,6 +66,11 @@
             <!-- Tunis -->
             <div class="city-card">
                 <h2 data-fr="📍 Tunis, Tunisie" data-ar="📍 تونس، تونس">📍 Tunis, Tunisie</h2>
+                <div class="local-time">
+                    <span class="clock-icon">🕐</span>
+                    <span data-fr="Heure locale:" data-ar="الوقت المحلي:">Heure locale:</span>
+                    <span id="tunis-time" class="time-display">--:--:--</span>
+                </div>
                 <div id="tunis-prayers" class="prayers-list">
                     <div class="prayer-item">
                         <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
