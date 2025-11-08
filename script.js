@@ -650,3 +650,173 @@ setInterval(async () => {
         highlightCurrentPrayer('city2', city2Timings);
     }
 }, 10000); // 10000 ms = 10 secondes
+
+// ========== GESTION DU CORAN ==========
+
+// Ouvrir/Fermer modal Coran
+document.getElementById('quran-btn').addEventListener('click', () => {
+    document.getElementById('quran-modal').classList.add('active');
+});
+
+document.getElementById('close-quran').addEventListener('click', () => {
+    document.getElementById('quran-modal').classList.remove('active');
+});
+
+// Fermer en cliquant en dehors
+document.getElementById('quran-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'quran-modal') {
+        document.getElementById('quran-modal').classList.remove('active');
+    }
+});
+
+// Charger une sourate
+document.getElementById('load-surah-btn').addEventListener('click', async () => {
+    const surahNumber = document.getElementById('surah-select').value;
+    const quranTextDiv = document.getElementById('quran-text');
+    
+    quranTextDiv.innerHTML = '<p class="quran-info">⏳ Chargement...</p>';
+    
+    try {
+        const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`);
+        const data = await response.json();
+        
+        if (data.status === 'OK') {
+            const surah = data.data;
+            let html = `<h3 style="text-align: center; color: #1e3c72; margin-bottom: 20px;">سورة ${surah.name} - ${surah.englishName}</h3>`;
+            
+            // Ajouter Bismillah sauf pour sourate 9
+            if (surahNumber !== '9' && surahNumber !== '1') {
+                html += '<p style="text-align: center; font-size: 1.2em; color: #2a5298; margin-bottom: 20px;">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>';
+            }
+            
+            surah.ayahs.forEach(ayah => {
+                html += `<div class="ayah">
+                    <span class="ayah-number">${ayah.numberInSurah}</span>
+                    ${ayah.text}
+                </div>`;
+            });
+            
+            quranTextDiv.innerHTML = html;
+        }
+    } catch (error) {
+        quranTextDiv.innerHTML = '<p class="quran-info" style="color: #dc3545;">❌ Erreur de chargement</p>';
+    }
+});
+
+// ========== GESTION DU TASBIH ==========
+
+let tasbihCount = 0;
+let tasbihTarget = 0;
+let currentTasbihPhrase = 'سُبْحَانَ ٱللَّٰهِ';
+
+// Ouvrir/Fermer modal Tasbih
+document.getElementById('tasbih-btn').addEventListener('click', () => {
+    document.getElementById('tasbih-modal').classList.add('active');
+});
+
+document.getElementById('close-tasbih').addEventListener('click', () => {
+    document.getElementById('tasbih-modal').classList.remove('active');
+});
+
+// Fermer en cliquant en dehors
+document.getElementById('tasbih-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'tasbih-modal') {
+        document.getElementById('tasbih-modal').classList.remove('active');
+    }
+});
+
+// Incrémenter le compteur
+document.getElementById('tasbih-increment').addEventListener('click', () => {
+    tasbihCount++;
+    updateTasbihDisplay();
+    
+    // Vibration si disponible
+    if (navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+    
+    // Animation du bouton
+    const btn = document.getElementById('tasbih-increment');
+    btn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        btn.style.transform = 'scale(1)';
+    }, 100);
+    
+    // Vérifier si l'objectif est atteint
+    if (tasbihTarget > 0 && tasbihCount === tasbihTarget) {
+        showTasbihGoalReached();
+    }
+});
+
+// Réinitialiser
+document.getElementById('tasbih-reset').addEventListener('click', () => {
+    if (confirm(currentLang === 'ar' ? 'هل تريد إعادة تعيين العداد؟' : 'Réinitialiser le compteur?')) {
+        tasbihCount = 0;
+        tasbihTarget = 0;
+        updateTasbihDisplay();
+        document.getElementById('tasbih-goal').classList.remove('active');
+    }
+});
+
+// Objectifs 33 et 99
+document.getElementById('tasbih-target-33').addEventListener('click', () => {
+    tasbihTarget = 33;
+    updateTasbihGoal();
+});
+
+document.getElementById('tasbih-target-99').addEventListener('click', () => {
+    tasbihTarget = 99;
+    updateTasbihGoal();
+});
+
+// Sélectionner une phrase
+document.querySelectorAll('.phrase-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.phrase-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTasbihPhrase = btn.dataset.phrase;
+        document.getElementById('current-phrase').textContent = currentTasbihPhrase;
+    });
+});
+
+function updateTasbihDisplay() {
+    document.getElementById('tasbih-count').textContent = tasbihCount;
+}
+
+function updateTasbihGoal() {
+    const goalDiv = document.getElementById('tasbih-goal');
+    const remaining = tasbihTarget - tasbihCount;
+    
+    if (remaining > 0) {
+        const t = translations[currentLang];
+        if (currentLang === 'ar') {
+            goalDiv.textContent = `الهدف: ${tasbihTarget} - متبقي: ${remaining}`;
+        } else {
+            goalDiv.textContent = `Objectif: ${tasbihTarget} - Reste: ${remaining}`;
+        }
+        goalDiv.classList.add('active');
+    } else {
+        goalDiv.classList.remove('active');
+    }
+}
+
+function showTasbihGoalReached() {
+    const goalDiv = document.getElementById('tasbih-goal');
+    if (currentLang === 'ar') {
+        goalDiv.textContent = '🎉 ما شاء الله! تم إكمال الهدف! 🎉';
+    } else {
+        goalDiv.textContent = '🎉 MashAllah! Objectif atteint! 🎉';
+    }
+    goalDiv.style.background = 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)';
+    goalDiv.style.color = 'white';
+    
+    // Vibration plus longue
+    if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+    }
+    
+    setTimeout(() => {
+        goalDiv.style.background = '#fff3cd';
+        goalDiv.style.color = '#856404';
+    }, 3000);
+}
