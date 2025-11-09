@@ -811,3 +811,175 @@ function showTasbihGoalReached() {
         goalDiv.style.color = '#856404';
     }, 3000);
 }
+
+// ========== GESTION DE LA QIBLA ==========
+
+// Coordonnées de La Mecque (Kaaba)
+const MECCA = {
+    lat: 21.4225,
+    lng: 39.8262
+};
+
+let userPosition = null;
+let deviceOrientation = 0;
+
+// Ouvrir/Fermer modal Qibla
+document.getElementById('qibla-btn').addEventListener('click', () => {
+    document.getElementById('qibla-modal').classList.add('active');
+    initQibla();
+});
+
+document.getElementById('close-qibla').addEventListener('click', () => {
+    document.getElementById('qibla-modal').classList.remove('active');
+});
+
+// Fermer en cliquant en dehors
+document.getElementById('qibla-modal').addEventListener('click', (e) => {
+    if (e.target.id === 'qibla-modal') {
+        document.getElementById('qibla-modal').classList.remove('active');
+    }
+});
+
+// Initialiser la Qibla
+function initQibla() {
+    const infoDiv = document.getElementById('qibla-info');
+    
+    if (currentLang === 'ar') {
+        infoDiv.textContent = 'جاري تحديد موقعك...';
+    } else {
+        infoDiv.textContent = 'Détection de votre position...';
+    }
+    
+    // Demander la position de l'utilisateur
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                userPosition = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                calculateQibla();
+                
+                // Essayer d'utiliser le capteur d'orientation si disponible
+                if (window.DeviceOrientationEvent) {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                }
+            },
+            (error) => {
+                if (currentLang === 'ar') {
+                    infoDiv.innerHTML = '<p style="color: #dc3545;">❌ تعذر تحديد موقعك. يرجى السماح بالوصول إلى الموقع.</p>';
+                } else {
+                    infoDiv.innerHTML = '<p style="color: #dc3545;">❌ Impossible de détecter votre position. Veuillez autoriser la géolocalisation.</p>';
+                }
+            }
+        );
+    } else {
+        if (currentLang === 'ar') {
+            infoDiv.innerHTML = '<p style="color: #dc3545;">❌ المتصفح لا يدعم تحديد الموقع</p>';
+        } else {
+            infoDiv.innerHTML = '<p style="color: #dc3545;">❌ Votre navigateur ne supporte pas la géolocalisation</p>';
+        }
+    }
+}
+
+// Calculer l'angle et la distance vers La Mecque
+function calculateQibla() {
+    const infoDiv = document.getElementById('qibla-info');
+    
+    if (!userPosition) return;
+    
+    // Calculer l'angle Qibla
+    const qiblaAngle = calculateBearing(
+        userPosition.lat,
+        userPosition.lng,
+        MECCA.lat,
+        MECCA.lng
+    );
+    
+    // Calculer la distance
+    const distance = calculateDistance(
+        userPosition.lat,
+        userPosition.lng,
+        MECCA.lat,
+        MECCA.lng
+    );
+    
+    // Afficher les informations
+    if (currentLang === 'ar') {
+        infoDiv.innerHTML = '<p style="color: #22c55e;">✅ تم تحديد اتجاه القبلة بنجاح</p>';
+    } else {
+        infoDiv.innerHTML = '<p style="color: #22c55e;">✅ Direction de la Qibla détectée avec succès</p>';
+    }
+    
+    document.getElementById('qibla-angle').textContent = Math.round(qiblaAngle) + '°';
+    document.getElementById('qibla-distance').textContent = Math.round(distance) + ' km';
+    document.getElementById('user-location').textContent = 
+        `${userPosition.lat.toFixed(4)}°, ${userPosition.lng.toFixed(4)}°`;
+    
+    // Orienter la boussole
+    const needle = document.getElementById('compass-needle');
+    needle.style.transform = `rotate(${qiblaAngle}deg)`;
+}
+
+// Calculer l'angle entre deux points (bearing)
+function calculateBearing(lat1, lng1, lat2, lng2) {
+    const dLng = toRadians(lng2 - lng1);
+    const lat1Rad = toRadians(lat1);
+    const lat2Rad = toRadians(lat2);
+    
+    const y = Math.sin(dLng) * Math.cos(lat2Rad);
+    const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+              Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLng);
+    
+    let bearing = toDegrees(Math.atan2(y, x));
+    bearing = (bearing + 360) % 360;
+    
+    return bearing;
+}
+
+// Calculer la distance entre deux points (Haversine)
+function calculateDistance(lat1, lng1, lat2, lng2) {
+    const R = 6371; // Rayon de la Terre en km
+    const dLat = toRadians(lat2 - lat1);
+    const dLng = toRadians(lng2 - lng1);
+    
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+              Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    
+    return distance;
+}
+
+// Gérer l'orientation de l'appareil
+function handleOrientation(event) {
+    if (event.alpha !== null) {
+        deviceOrientation = event.alpha;
+        
+        // Mettre à jour la boussole si la position est connue
+        if (userPosition) {
+            const qiblaAngle = calculateBearing(
+                userPosition.lat,
+                userPosition.lng,
+                MECCA.lat,
+                MECCA.lng
+            );
+            
+            const needle = document.getElementById('compass-needle');
+            const adjustedAngle = qiblaAngle - deviceOrientation;
+            needle.style.transform = `rotate(${adjustedAngle}deg)`;
+        }
+    }
+}
+
+// Convertir degrés en radians
+function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
+// Convertir radians en degrés
+function toDegrees(radians) {
+    return radians * (180 / Math.PI);
+}
