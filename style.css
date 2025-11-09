@@ -504,6 +504,14 @@ header h1 {
     background-position: center;
 }
 
+.prayer-info-left {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    z-index: 1;
+}
+
 /* Overlay sombre pour la lisibilité du texte */
 .prayer-item::before {
     content: '';
