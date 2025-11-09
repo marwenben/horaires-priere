@@ -1072,185 +1072,112 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
 
 // ========== GESTION DE LA MÉTÉO POUR CHAQUE PRIÈRE ==========
 
-// Cache pour la météo (éviter trop de requêtes)
-const weatherCache = new Map();
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
-
 // Météo par défaut basée sur le mois actuel
-function getDefaultWeather() {
+function getDefaultWeatherByMonth() {
     const month = new Date().getMonth() + 1; // 1-12
     
     // Hiver (Déc-Fév): froid et neige
     if (month === 12 || month === 1 || month === 2) {
-        return { temp: -5, condition: '338', description: 'Neige' };
+        return { temp: -5, condition: '338' };
     }
-    // Printemps (Mar-Mai): doux et nuageux
+    // Printemps (Mar-Mai): doux
     else if (month >= 3 && month <= 5) {
-        return { temp: 10, condition: '116', description: 'Nuageux' };
+        return { temp: 10, condition: '116' };
     }
-    // Été (Jun-Août): chaud et ensoleillé
+    // Été (Jun-Août): chaud
     else if (month >= 6 && month <= 8) {
-        return { temp: 25, condition: '113', description: 'Ensoleillé' };
+        return { temp: 25, condition: '113' };
     }
-    // Automne (Sep-Nov): frais et nuageux
+    // Automne (Sep-Nov): frais
     else {
-        return { temp: 12, condition: '119', description: 'Nuageux' };
+        return { temp: 12, condition: '119' };
     }
-}
-
-// Récupérer la météo pour une ville
-async function fetchWeatherForCity(cityName, lat, lng, cityIndex) {
-    const cacheKey = `${cityName}-weather`;
-    const cached = weatherCache.get(cacheKey);
-    
-    // Si en cache et pas expiré
-    if (cached && (Date.now() - cached.timestamp < CACHE_DURATION)) {
-        updatePrayersWeather(cached.data, cityIndex);
-        return;
-    }
-    
-    // D'abord afficher la météo par défaut immédiatement
-    const defaultWeather = getDefaultWeather();
-    defaultWeather.timestamp = Date.now();
-    updatePrayersWeather(defaultWeather, cityIndex);
-    
-    // Ensuite essayer de récupérer la vraie météo
-    try {
-        const response = await fetch(`https://wttr.in/${encodeURIComponent(cityName)}?format=j1`, {
-            signal: AbortSignal.timeout(5000) // Timeout 5 secondes
-        });
-        
-        if (!response.ok) throw new Error('API error');
-        
-        const data = await response.json();
-        
-        if (data && data.current_condition && data.current_condition[0]) {
-            const weatherData = {
-                temp: Math.round(data.current_condition[0].temp_C),
-                condition: data.current_condition[0].weatherCode,
-                description: data.current_condition[0].weatherDesc[0].value,
-                timestamp: Date.now()
-            };
-            
-            // Mettre en cache
-            weatherCache.set(cacheKey, weatherData);
-            
-            // Mettre à jour avec la vraie météo
-            updatePrayersWeather(weatherData, cityIndex);
-        }
-    } catch (error) {
-        console.log('Météo par défaut utilisée pour ' + cityName);
-        // La météo par défaut est déjà affichée, on ne fait rien
-    }
-}
-
-// Mettre à jour la météo sur toutes les prières d'une ville
-function updatePrayersWeather(weatherData, cityIndex) {
-    const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-    
-    prayers.forEach(prayer => {
-        const weatherDiv = document.getElementById(`city${cityIndex}-${prayer}-weather`);
-        if (!weatherDiv) return;
-        
-        const iconDiv = weatherDiv.querySelector('.weather-icon');
-        const tempSpan = weatherDiv.querySelector('.weather-temp');
-        
-        if (tempSpan) {
-            tempSpan.textContent = weatherData.temp + '°';
-        }
-        
-        if (iconDiv) {
-            // Déterminer l'icône et l'animation selon la prière et la condition
-            const weatherInfo = getWeatherIconForPrayer(prayer, weatherData.condition);
-            iconDiv.textContent = weatherInfo.icon;
-            iconDiv.setAttribute('data-weather', weatherInfo.animation);
-        }
-    });
 }
 
 // Obtenir l'icône météo selon la prière et la condition
-function getWeatherIconForPrayer(prayer, weatherCode) {
+function getWeatherIcon(prayer, weatherCode) {
     const code = parseInt(weatherCode);
     const isNight = (prayer === 'isha' || prayer === 'fajr');
     
     // Neige (codes 323-395)
     if (code >= 323 && code <= 395) {
-        if (code >= 371 || code === 338 || code === 395) {
-            return { icon: '❄️', animation: 'heavy-snow' };
-        }
-        return { icon: '🌨️', animation: 'snow' };
+        return code >= 371 || code === 338 ? 
+            { icon: '❄️', anim: 'heavy-snow' } : { icon: '🌨️', anim: 'snow' };
     }
     
     // Pluie (codes 293-365)
     if (code >= 293 && code <= 365) {
-        if (code === 302 || code === 308 || code === 359 || code === 365) {
-            return { icon: '🌧️', animation: 'heavy-rain' };
-        }
-        if (code >= 200 && code <= 232) {
-            return { icon: '⛈️', animation: 'thunderstorm' };
-        }
-        return { icon: '🌦️', animation: 'rain' };
+        return code === 302 || code === 308 ? 
+            { icon: '🌧️', anim: 'heavy-rain' } : { icon: '🌦️', anim: 'rain' };
     }
     
-    // Bruine (codes 263-284)
-    if (code >= 263 && code <= 284) {
-        return { icon: '🌧️', animation: 'drizzle' };
-    }
-    
-    // Orage (codes 200-232 ou 386-392)
+    // Orage
     if ((code >= 200 && code <= 232) || (code >= 386 && code <= 392)) {
-        return { icon: '⛈️', animation: 'thunderstorm' };
+        return { icon: '⛈️', anim: 'thunderstorm' };
     }
     
-    // Brouillard (codes 143-260)
+    // Brouillard
     if (code === 143 || code === 248 || code === 260) {
-        return { icon: '🌫️', animation: 'fog' };
+        return { icon: '🌫️', anim: 'fog' };
     }
     
-    // Nuageux (codes 119-122)
+    // Nuageux
     if (code === 119 || code === 122) {
-        return { icon: isNight ? '☁️' : '⛅', animation: 'clouds' };
+        return { icon: isNight ? '☁️' : '⛅', anim: 'clouds' };
     }
     
-    // Partiellement nuageux (116)
+    // Partiellement nuageux
     if (code === 116) {
-        return { icon: isNight ? '🌙' : '🌤️', animation: 'cloudy' };
+        return { icon: isNight ? '🌙' : '🌤️', anim: 'cloudy' };
     }
     
-    // Clair (113)
-    if (isNight) {
-        return { icon: '🌙', animation: 'clear-night' };
-    } else {
-        return { icon: '☀️', animation: 'sunny' };
+    // Clair
+    return isNight ? 
+        { icon: '🌙', anim: 'clear-night' } : { icon: '☀️', anim: 'sunny' };
+}
+
+// Mettre à jour la météo d'une prière
+function updatePrayerWeather(cityIndex, prayer, temp, condition) {
+    const weatherDiv = document.getElementById(`city${cityIndex}-${prayer}-weather`);
+    if (!weatherDiv) return;
+    
+    const iconDiv = weatherDiv.querySelector('.weather-icon');
+    const tempSpan = weatherDiv.querySelector('.weather-temp');
+    
+    if (tempSpan) {
+        tempSpan.textContent = temp + '°';
+    }
+    
+    if (iconDiv) {
+        const weatherInfo = getWeatherIcon(prayer, condition);
+        iconDiv.textContent = weatherInfo.icon;
+        iconDiv.setAttribute('data-weather', weatherInfo.anim);
     }
 }
 
-// Initialiser la météo pour toutes les villes affichées
-function initWeatherForAllCities() {
-    // City 1
-    const city1Select = document.getElementById('city1-select');
-    if (city1Select) {
-        const selectedCity = cities.find(c => c.name === city1Select.value);
-        if (selectedCity) {
-            fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 1);
-        }
-    }
+// Afficher la météo par défaut pour une ville
+function setDefaultWeatherForCity(cityIndex) {
+    const weather = getDefaultWeatherByMonth();
+    const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
     
-    // City 2 si visible
+    prayers.forEach(prayer => {
+        updatePrayerWeather(cityIndex, prayer, weather.temp, weather.condition);
+    });
+}
+
+// Initialiser la météo pour toutes les villes
+function initAllWeather() {
+    // City 1 (toujours visible)
+    setDefaultWeatherForCity(1);
+    
+    // City 2 (si visible)
     const city2Card = document.getElementById('city2-card');
     if (city2Card && city2Card.style.display !== 'none') {
-        const city2Select = document.getElementById('city2-select');
-        if (city2Select) {
-            const selectedCity = cities.find(c => c.name === city2Select.value);
-            if (selectedCity) {
-                fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 2);
-            }
-        }
+        setDefaultWeatherForCity(2);
     }
+    
+    console.log('Météo initialisée avec succès!');
 }
-
-// Rafraîchir la météo toutes les 30 minutes
-setInterval(initWeatherForAllCities, 30 * 60 * 1000);
 
 // ========== FIN GESTION MÉTÉO ==========
 
@@ -1268,32 +1195,8 @@ function toDegrees(radians) {
 
 // Attendre que la page soit chargée
 setTimeout(() => {
-    // Initialiser la météo après un court délai
-    initWeatherForAllCities();
+    // Initialiser la météo IMMÉDIATEMENT
+    initAllWeather();
     
-    // Rafraîchir la météo quand l'utilisateur change de ville
-    const city1Select = document.getElementById('city1-select');
-    const city2Select = document.getElementById('city2-select');
-    
-    if (city1Select) {
-        city1Select.addEventListener('change', () => {
-            setTimeout(() => {
-                const selectedCity = cities.find(c => c.name === city1Select.value);
-                if (selectedCity) {
-                    fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 1);
-                }
-            }, 1000);
-        });
-    }
-    
-    if (city2Select) {
-        city2Select.addEventListener('change', () => {
-            setTimeout(() => {
-                const selectedCity = cities.find(c => c.name === city2Select.value);
-                if (selectedCity) {
-                    fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 2);
-                }
-            }, 1000);
-        });
-    }
-}, 2000); // Attendre 2 secondes après le chargement de la page
+    console.log('🌤️ Météo activée!');
+}, 500); // Seulement 500ms de délai
