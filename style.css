@@ -569,13 +569,46 @@ header h1 {
     border-left-color: #ffd700;
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
     animation: glow-prayer 2s ease-in-out infinite;
-    transform: scale(1.05);
+    transform: scale(1.08);
+    z-index: 10;
+    margin: 15px 0;
 }
 
 .prayer-item.current::before {
     background: rgba(30, 60, 114, 0.4);
     border: 2px solid #ffd700;
     border-radius: 15px;
+}
+
+.prayer-item.current .prayer-name {
+    font-size: 1.6em;
+    font-weight: 800;
+    color: #ffd700;
+    text-shadow: 
+        2px 2px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+.prayer-item.current .prayer-time {
+    font-size: 1.8em;
+    font-weight: 900;
+    color: #ffd700;
+    text-shadow: 
+        2px 2px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+.prayer-item.current .weather-icon {
+    font-size: 2.5em;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+}
+
+.prayer-item.current .weather-temp {
+    font-size: 1.6em;
+    color: #ffd700;
+    text-shadow: 
+        2px 2px 6px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 215, 0, 0.8);
 }
 
 @keyframes glow-prayer {
@@ -608,14 +641,6 @@ header h1 {
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
     position: relative;
     z-index: 1;
-}
-
-.prayer-item.current .prayer-name,
-.prayer-item.current .prayer-time {
-    color: #ffd700;
-    text-shadow: 
-        2px 2px 6px rgba(0, 0, 0, 0.9),
-        0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .next-prayer {
