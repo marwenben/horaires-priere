@@ -812,7 +812,7 @@ function showTasbihGoalReached() {
     }, 3000);
 }
 
-// ========== GESTION DE LA QIBLA (Style Google) ==========
+// ========== GESTION DE LA QIBLA (Kaaba fixe, boussole qui tourne) ==========
 
 // Coordonnées de La Mecque (Kaaba)
 const MECCA = {
@@ -823,13 +823,12 @@ const MECCA = {
 let userPosition = null;
 let qiblaDirection = 0;
 let deviceHeading = 0;
-let isOrientationSupported = false;
 let orientationListener = null;
 
 // Ouvrir modal Qibla
 document.getElementById('qibla-btn').addEventListener('click', () => {
     document.getElementById('qibla-modal').classList.add('active');
-    initQiblaFinder();
+    initQiblaCompass();
 });
 
 // Fermer modal Qibla
@@ -846,8 +845,8 @@ document.getElementById('qibla-modal').addEventListener('click', (e) => {
     }
 });
 
-// Initialiser la recherche Qibla
-function initQiblaFinder() {
+// Initialiser la boussole Qibla
+function initQiblaCompass() {
     const statusText = document.getElementById('status-text');
     
     // Réinitialiser
@@ -855,14 +854,19 @@ function initQiblaFinder() {
     deviceHeading = 0;
     userPosition = null;
     
-    // Texte de chargement
-    updateStatusText('loading');
+    // Message de chargement
+    if (currentLang === 'ar') {
+        statusText.textContent = '🔍 جاري تحديد موقعك...';
+    } else {
+        statusText.textContent = '🔍 Détection de votre position...';
+    }
+    statusText.classList.remove('success', 'error');
     
     // Demander la géolocalisation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-            onLocationSuccess,
-            onLocationError,
+            onQiblaLocationSuccess,
+            onQiblaLocationError,
             {
                 enableHighAccuracy: true,
                 timeout: 10000,
@@ -870,12 +874,17 @@ function initQiblaFinder() {
             }
         );
     } else {
-        updateStatusText('no-geolocation');
+        statusText.classList.add('error');
+        if (currentLang === 'ar') {
+            statusText.textContent = '❌ الجهاز لا يدعم تحديد الموقع';
+        } else {
+            statusText.textContent = '❌ Géolocalisation non supportée';
+        }
     }
 }
 
 // Succès de la géolocalisation
-function onLocationSuccess(position) {
+function onQiblaLocationSuccess(position) {
     userPosition = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
@@ -897,98 +906,66 @@ function onLocationSuccess(position) {
         MECCA.lng
     );
     
+    // Afficher le succès
+    const statusText = document.getElementById('status-text');
+    statusText.classList.add('success');
+    if (currentLang === 'ar') {
+        statusText.textContent = '✅ تم تحديد اتجاه القبلة بنجاح!';
+    } else {
+        statusText.textContent = '✅ Direction de la Qibla détectée avec succès!';
+    }
+    
     // Afficher les informations
-    updateStatusText('success');
-    displayQiblaInfo(qiblaDirection, distance, userPosition);
+    document.getElementById('qibla-angle-value').textContent = Math.round(qiblaDirection) + '°';
+    document.getElementById('qibla-distance-value').textContent = Math.round(distance).toLocaleString() + ' km';
+    document.getElementById('qibla-position-value').textContent = 
+        `${userPosition.lat.toFixed(4)}°, ${userPosition.lng.toFixed(4)}°`;
     
     // Démarrer le suivi de l'orientation
     startOrientationTracking();
+    
+    // Sur PC (pas d'orientation), tourner la boussole immédiatement
+    updateCompassRotation();
 }
 
 // Erreur de géolocalisation
-function onLocationError(error) {
-    console.error('Geolocation error:', error);
-    
-    let errorType = 'error';
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            errorType = 'permission-denied';
-            break;
-        case error.POSITION_UNAVAILABLE:
-            errorType = 'position-unavailable';
-            break;
-        case error.TIMEOUT:
-            errorType = 'timeout';
-            break;
-    }
-    
-    updateStatusText(errorType);
-}
-
-// Mettre à jour le texte de statut
-function updateStatusText(status) {
+function onQiblaLocationError(error) {
     const statusText = document.getElementById('status-text');
-    const statusDiv = document.getElementById('qibla-status');
+    statusText.classList.add('error');
     
-    // Retirer les classes
-    statusText.classList.remove('success', 'error');
-    
-    const messages = {
-        loading: {
-            fr: '🔍 Détection de votre position...',
-            ar: '🔍 جاري تحديد موقعك...'
-        },
-        success: {
-            fr: '✅ Direction de la Qibla détectée avec succès!',
-            ar: '✅ تم تحديد اتجاه القبلة بنجاح!'
-        },
-        'permission-denied': {
-            fr: '❌ Veuillez autoriser la géolocalisation',
-            ar: '❌ يرجى السماح بتحديد الموقع'
-        },
-        'position-unavailable': {
-            fr: '❌ Position non disponible',
-            ar: '❌ الموقع غير متاح'
-        },
-        timeout: {
-            fr: '❌ Délai d\'attente dépassé',
-            ar: '❌ انتهت مهلة الانتظار'
-        },
-        error: {
-            fr: '❌ Erreur lors de la détection',
-            ar: '❌ خطأ في التحديد'
-        },
-        'no-geolocation': {
-            fr: '❌ Géolocalisation non supportée',
-            ar: '❌ الجهاز لا يدعم تحديد الموقع'
+    if (currentLang === 'ar') {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                statusText.textContent = '❌ يرجى السماح بتحديد الموقع';
+                break;
+            case error.POSITION_UNAVAILABLE:
+                statusText.textContent = '❌ الموقع غير متاح';
+                break;
+            case error.TIMEOUT:
+                statusText.textContent = '❌ انتهت مهلة الانتظار';
+                break;
+            default:
+                statusText.textContent = '❌ خطأ في التحديد';
         }
-    };
-    
-    const message = messages[status] || messages.error;
-    statusText.textContent = message[currentLang];
-    
-    if (status === 'success') {
-        statusText.classList.add('success');
-    } else if (status !== 'loading') {
-        statusText.classList.add('error');
+    } else {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                statusText.textContent = '❌ Veuillez autoriser la géolocalisation';
+                break;
+            case error.POSITION_UNAVAILABLE:
+                statusText.textContent = '❌ Position non disponible';
+                break;
+            case error.TIMEOUT:
+                statusText.textContent = '❌ Délai d\'attente dépassé';
+                break;
+            default:
+                statusText.textContent = '❌ Erreur lors de la détection';
+        }
     }
-}
-
-// Afficher les informations Qibla
-function displayQiblaInfo(angle, distance, position) {
-    document.getElementById('qibla-degree-display').textContent = Math.round(angle) + '°';
-    document.getElementById('qibla-distance-display').textContent = 
-        Math.round(distance).toLocaleString() + ' km';
-    document.getElementById('user-position-display').textContent = 
-        `${position.lat.toFixed(4)}°, ${position.lng.toFixed(4)}°`;
-    
-    // Orienter la flèche initialement
-    updateQiblaArrow();
 }
 
 // Démarrer le suivi de l'orientation
 function startOrientationTracking() {
-    // Vérifier si l'orientation est supportée
     if (window.DeviceOrientationEvent) {
         // Pour iOS 13+, demander la permission
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -1008,8 +985,6 @@ function startOrientationTracking() {
 
 // Attacher le listener d'orientation
 function attachOrientationListener() {
-    isOrientationSupported = true;
-    
     orientationListener = (event) => {
         if (event.alpha !== null) {
             // Alpha = rotation autour de l'axe Z (boussole)
@@ -1020,7 +995,7 @@ function attachOrientationListener() {
                 deviceHeading = event.webkitCompassHeading;
             }
             
-            updateQiblaArrow();
+            updateCompassRotation();
         }
     };
     
@@ -1035,21 +1010,22 @@ function stopOrientationTracking() {
     }
 }
 
-// Mettre à jour la flèche Qibla
-function updateQiblaArrow() {
+// Mettre à jour la rotation de la boussole
+function updateCompassRotation() {
     if (!userPosition) return;
     
-    const arrow = document.getElementById('qibla-arrow');
+    const compassCircle = document.getElementById('compass-rotating');
     
-    // Calculer l'angle de rotation de la flèche
-    // La flèche pointe vers La Mecque par rapport au Nord du device
-    let rotationAngle = qiblaDirection - deviceHeading;
+    // La Kaaba est FIXE en haut (0°)
+    // Le cercle doit tourner pour montrer où est le Nord
+    // Rotation = direction Qibla - orientation device
+    let rotation = qiblaDirection - deviceHeading;
     
-    // Normaliser l'angle entre 0 et 360
-    rotationAngle = ((rotationAngle % 360) + 360) % 360;
+    // Normaliser l'angle
+    rotation = ((rotation % 360) + 360) % 360;
     
-    // Appliquer la rotation
-    arrow.style.transform = `rotate(${rotationAngle}deg)`;
+    // Appliquer la rotation au cercle
+    compassCircle.style.transform = `rotate(${rotation}deg)`;
 }
 
 // Calculer l'angle entre deux points (bearing)
@@ -1082,27 +1058,6 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
     const distance = R * c;
     
     return distance;
-}
-
-// Gérer l'orientation de l'appareil
-function handleOrientation(event) {
-    if (event.alpha !== null) {
-        deviceOrientation = event.alpha;
-        
-        // Mettre à jour la boussole si la position est connue
-        if (userPosition) {
-            const qiblaAngle = calculateBearing(
-                userPosition.lat,
-                userPosition.lng,
-                MECCA.lat,
-                MECCA.lng
-            );
-            
-            const needle = document.getElementById('compass-needle');
-            const adjustedAngle = qiblaAngle - deviceOrientation;
-            needle.style.transform = `rotate(${adjustedAngle}deg)`;
-        }
-    }
 }
 
 // Convertir degrés en radians
