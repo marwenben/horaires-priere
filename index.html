@@ -104,8 +104,15 @@
             
             <!-- Compte à rebours Ramadan -->
             <div id="ramadan-countdown" class="ramadan-countdown">
-                <div class="ramadan-icon">🌙</div>
-                <p id="ramadan-text"></p>
+                <div class="ramadan-icon">
+                    <video class="ramadan-video" autoplay loop muted playsinline>
+                        <source src="ramadan.mp4" type="video/mp4">
+                        <img src="ramadan.gif" alt="Ramadan">
+                    </video>
+                </div>
+                <div class="ramadan-text-container">
+                    <p id="ramadan-text" class="ramadan-main-text"></p>
+                </div>
             </div>
         </header>
 
