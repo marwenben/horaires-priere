@@ -1072,12 +1072,31 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
 
 // ========== GESTION DE LA MÉTÉO POUR CHAQUE PRIÈRE ==========
 
-// API OpenWeatherMap (gratuite)
-const WEATHER_API_KEY = ''; // Vous devrez obtenir une clé API gratuite sur openweathermap.org
-
 // Cache pour la météo (éviter trop de requêtes)
 const weatherCache = new Map();
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+
+// Météo par défaut basée sur le mois actuel
+function getDefaultWeather() {
+    const month = new Date().getMonth() + 1; // 1-12
+    
+    // Hiver (Déc-Fév): froid et neige
+    if (month === 12 || month === 1 || month === 2) {
+        return { temp: -5, condition: '338', description: 'Neige' };
+    }
+    // Printemps (Mar-Mai): doux et nuageux
+    else if (month >= 3 && month <= 5) {
+        return { temp: 10, condition: '116', description: 'Nuageux' };
+    }
+    // Été (Jun-Août): chaud et ensoleillé
+    else if (month >= 6 && month <= 8) {
+        return { temp: 25, condition: '113', description: 'Ensoleillé' };
+    }
+    // Automne (Sep-Nov): frais et nuageux
+    else {
+        return { temp: 12, condition: '119', description: 'Nuageux' };
+    }
+}
 
 // Récupérer la météo pour une ville
 async function fetchWeatherForCity(cityName, lat, lng, cityIndex) {
@@ -1090,12 +1109,22 @@ async function fetchWeatherForCity(cityName, lat, lng, cityIndex) {
         return;
     }
     
+    // D'abord afficher la météo par défaut immédiatement
+    const defaultWeather = getDefaultWeather();
+    defaultWeather.timestamp = Date.now();
+    updatePrayersWeather(defaultWeather, cityIndex);
+    
+    // Ensuite essayer de récupérer la vraie météo
     try {
-        // Utiliser wttr.in (pas besoin de clé API!)
-        const response = await fetch(`https://wttr.in/${encodeURIComponent(cityName)}?format=j1`);
+        const response = await fetch(`https://wttr.in/${encodeURIComponent(cityName)}?format=j1`, {
+            signal: AbortSignal.timeout(5000) // Timeout 5 secondes
+        });
+        
+        if (!response.ok) throw new Error('API error');
+        
         const data = await response.json();
         
-        if (data && data.current_condition) {
+        if (data && data.current_condition && data.current_condition[0]) {
             const weatherData = {
                 temp: Math.round(data.current_condition[0].temp_C),
                 condition: data.current_condition[0].weatherCode,
@@ -1106,17 +1135,12 @@ async function fetchWeatherForCity(cityName, lat, lng, cityIndex) {
             // Mettre en cache
             weatherCache.set(cacheKey, weatherData);
             
-            // Mettre à jour les prières
+            // Mettre à jour avec la vraie météo
             updatePrayersWeather(weatherData, cityIndex);
         }
     } catch (error) {
-        console.error('Erreur météo:', error);
-        // Météo par défaut
-        updatePrayersWeather({
-            temp: '--',
-            condition: '113', // Ensoleillé par défaut
-            description: 'N/A'
-        }, cityIndex);
+        console.log('Météo par défaut utilisée pour ' + cityName);
+        // La météo par défaut est déjà affichée, on ne fait rien
     }
 }
 
@@ -1132,7 +1156,7 @@ function updatePrayersWeather(weatherData, cityIndex) {
         const tempSpan = weatherDiv.querySelector('.weather-temp');
         
         if (tempSpan) {
-            tempSpan.textContent = weatherData.temp + '°C';
+            tempSpan.textContent = weatherData.temp + '°';
         }
         
         if (iconDiv) {
@@ -1146,10 +1170,7 @@ function updatePrayersWeather(weatherData, cityIndex) {
 
 // Obtenir l'icône météo selon la prière et la condition
 function getWeatherIconForPrayer(prayer, weatherCode) {
-    // Codes météo de wttr.in
     const code = parseInt(weatherCode);
-    
-    // Conditions selon l'heure de prière
     const isNight = (prayer === 'isha' || prayer === 'fajr');
     
     // Neige (codes 323-395)
@@ -1206,7 +1227,7 @@ function getWeatherIconForPrayer(prayer, weatherCode) {
 
 // Initialiser la météo pour toutes les villes affichées
 function initWeatherForAllCities() {
-    // Ville 1 (toujours Montréal au début)
+    // City 1
     const city1Select = document.getElementById('city1-select');
     if (city1Select) {
         const selectedCity = cities.find(c => c.name === city1Select.value);
@@ -1215,7 +1236,7 @@ function initWeatherForAllCities() {
         }
     }
     
-    // Ville 2 si visible
+    // City 2 si visible
     const city2Card = document.getElementById('city2-card');
     if (city2Card && city2Card.style.display !== 'none') {
         const city2Select = document.getElementById('city2-select');
