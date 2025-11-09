@@ -627,6 +627,260 @@ header h1 {
     font-size: 1.1em;
 }
 
+/* ========== MÉTÉO DANS LES PRIÈRES - ANIMATIONS ========== */
+
+.prayer-weather {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.weather-icon {
+    width: 45px;
+    height: 45px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.weather-temp {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* SOLEIL - Rotation */
+.weather-icon[data-weather="clear"],
+.weather-icon[data-weather="sunny"] {
+    animation: rotate-sun 20s linear infinite;
+}
+
+@keyframes rotate-sun {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* NEIGE - Flocons qui tombent */
+.weather-icon[data-weather="snow"]::before,
+.weather-icon[data-weather="snow"]::after {
+    content: '❄️';
+    position: absolute;
+    font-size: 0.5em;
+    animation: falling-snow 3s linear infinite;
+}
+
+.weather-icon[data-weather="snow"]::before {
+    left: -8px;
+    animation-delay: 0s;
+}
+
+.weather-icon[data-weather="snow"]::after {
+    right: -8px;
+    animation-delay: 1.5s;
+}
+
+@keyframes falling-snow {
+    0% {
+        top: -20px;
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        top: 50px;
+        opacity: 0;
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+/* PLUIE - Gouttes qui tombent */
+.weather-icon[data-weather="rain"]::before,
+.weather-icon[data-weather="rain"]::after {
+    content: '💧';
+    position: absolute;
+    font-size: 0.5em;
+    animation: falling-rain 1.5s linear infinite;
+}
+
+.weather-icon[data-weather="rain"]::before {
+    left: -5px;
+    animation-delay: 0s;
+}
+
+.weather-icon[data-weather="rain"]::after {
+    right: -5px;
+    animation-delay: 0.75s;
+}
+
+@keyframes falling-rain {
+    0% {
+        top: -15px;
+        opacity: 1;
+    }
+    100% {
+        top: 45px;
+        opacity: 0;
+    }
+}
+
+/* ORAGE - Éclair qui clignote */
+.weather-icon[data-weather="thunderstorm"] {
+    animation: thunder-flash 2s ease-in-out infinite;
+}
+
+@keyframes thunder-flash {
+    0%, 90%, 100% { 
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4)); 
+    }
+    5%, 15%, 25% { 
+        filter: drop-shadow(0 0 20px rgba(255, 255, 0, 1)) 
+                drop-shadow(0 0 40px rgba(255, 255, 0, 0.8)); 
+    }
+}
+
+/* NUAGES - Mouvement flottant */
+.weather-icon[data-weather="clouds"],
+.weather-icon[data-weather="cloudy"] {
+    animation: floating-clouds 4s ease-in-out infinite;
+}
+
+@keyframes floating-clouds {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+/* BROUILLARD - Effet fade */
+.weather-icon[data-weather="mist"],
+.weather-icon[data-weather="fog"] {
+    animation: mist-fade 3s ease-in-out infinite;
+}
+
+@keyframes mist-fade {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* VENT - Mouvement latéral */
+.weather-icon[data-weather="wind"] {
+    animation: wind-blow 2s ease-in-out infinite;
+}
+
+@keyframes wind-blow {
+    0%, 100% { transform: translateX(0px); }
+    50% { transform: translateX(7px); }
+}
+
+/* NUIT CLAIRE - Étoiles scintillantes */
+.weather-icon[data-weather="clear-night"]::before,
+.weather-icon[data-weather="clear-night"]::after {
+    content: '✨';
+    position: absolute;
+    font-size: 0.4em;
+    animation: twinkle-stars 2s ease-in-out infinite;
+}
+
+.weather-icon[data-weather="clear-night"]::before {
+    top: -10px;
+    right: -10px;
+    animation-delay: 0s;
+}
+
+.weather-icon[data-weather="clear-night"]::after {
+    bottom: -10px;
+    left: -10px;
+    animation-delay: 1s;
+}
+
+@keyframes twinkle-stars {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.2; transform: scale(0.7); }
+}
+
+/* NEIGE FORTE - Plus de flocons */
+.weather-icon[data-weather="heavy-snow"]::before,
+.weather-icon[data-weather="heavy-snow"]::after {
+    content: '❄️';
+    position: absolute;
+    animation: falling-snow-fast 2s linear infinite;
+}
+
+.weather-icon[data-weather="heavy-snow"]::before {
+    left: -10px;
+    font-size: 0.6em;
+    animation-delay: 0s;
+}
+
+.weather-icon[data-weather="heavy-snow"]::after {
+    right: -10px;
+    font-size: 0.6em;
+    animation-delay: 1s;
+}
+
+@keyframes falling-snow-fast {
+    0% { 
+        top: -25px; 
+        opacity: 1;
+        transform: rotate(0deg);
+    }
+    100% { 
+        top: 60px; 
+        opacity: 0;
+        transform: rotate(720deg);
+    }
+}
+
+/* PLUIE FORTE - Gouttes rapides */
+.weather-icon[data-weather="heavy-rain"]::before,
+.weather-icon[data-weather="heavy-rain"]::after {
+    content: '💧';
+    position: absolute;
+    animation: falling-rain-fast 1s linear infinite;
+}
+
+.weather-icon[data-weather="heavy-rain"]::before {
+    left: -6px;
+    font-size: 0.6em;
+    animation-delay: 0s;
+}
+
+.weather-icon[data-weather="heavy-rain"]::after {
+    right: -6px;
+    font-size: 0.6em;
+    animation-delay: 0.5s;
+}
+
+@keyframes falling-rain-fast {
+    0% { top: -20px; opacity: 1; }
+    100% { top: 50px; opacity: 0; }
+}
+
+/* DRIZZLE - Petite pluie légère */
+.weather-icon[data-weather="drizzle"]::before {
+    content: '💧';
+    position: absolute;
+    font-size: 0.4em;
+    left: 0;
+    animation: falling-rain 2s linear infinite;
+}
+
+/* Responsive météo */
+@media (max-width: 768px) {
+    .weather-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1.5em;
+    }
+    
+    .weather-temp {
+        font-size: 1.1em;
+    }
+}
+
 footer {
     text-align: center;
     color: white;
