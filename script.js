@@ -1070,6 +1070,169 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
     return distance;
 }
 
+// ========== GESTION DE LA MÉTÉO POUR CHAQUE PRIÈRE ==========
+
+// API OpenWeatherMap (gratuite)
+const WEATHER_API_KEY = ''; // Vous devrez obtenir une clé API gratuite sur openweathermap.org
+
+// Cache pour la météo (éviter trop de requêtes)
+const weatherCache = new Map();
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+
+// Récupérer la météo pour une ville
+async function fetchWeatherForCity(cityName, lat, lng, cityIndex) {
+    const cacheKey = `${cityName}-weather`;
+    const cached = weatherCache.get(cacheKey);
+    
+    // Si en cache et pas expiré
+    if (cached && (Date.now() - cached.timestamp < CACHE_DURATION)) {
+        updatePrayersWeather(cached.data, cityIndex);
+        return;
+    }
+    
+    try {
+        // Utiliser wttr.in (pas besoin de clé API!)
+        const response = await fetch(`https://wttr.in/${encodeURIComponent(cityName)}?format=j1`);
+        const data = await response.json();
+        
+        if (data && data.current_condition) {
+            const weatherData = {
+                temp: Math.round(data.current_condition[0].temp_C),
+                condition: data.current_condition[0].weatherCode,
+                description: data.current_condition[0].weatherDesc[0].value,
+                timestamp: Date.now()
+            };
+            
+            // Mettre en cache
+            weatherCache.set(cacheKey, weatherData);
+            
+            // Mettre à jour les prières
+            updatePrayersWeather(weatherData, cityIndex);
+        }
+    } catch (error) {
+        console.error('Erreur météo:', error);
+        // Météo par défaut
+        updatePrayersWeather({
+            temp: '--',
+            condition: '113', // Ensoleillé par défaut
+            description: 'N/A'
+        }, cityIndex);
+    }
+}
+
+// Mettre à jour la météo sur toutes les prières d'une ville
+function updatePrayersWeather(weatherData, cityIndex) {
+    const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+    
+    prayers.forEach(prayer => {
+        const weatherDiv = document.getElementById(`city${cityIndex}-${prayer}-weather`);
+        if (!weatherDiv) return;
+        
+        const iconDiv = weatherDiv.querySelector('.weather-icon');
+        const tempSpan = weatherDiv.querySelector('.weather-temp');
+        
+        if (tempSpan) {
+            tempSpan.textContent = weatherData.temp + '°C';
+        }
+        
+        if (iconDiv) {
+            // Déterminer l'icône et l'animation selon la prière et la condition
+            const weatherInfo = getWeatherIconForPrayer(prayer, weatherData.condition);
+            iconDiv.textContent = weatherInfo.icon;
+            iconDiv.setAttribute('data-weather', weatherInfo.animation);
+        }
+    });
+}
+
+// Obtenir l'icône météo selon la prière et la condition
+function getWeatherIconForPrayer(prayer, weatherCode) {
+    // Codes météo de wttr.in
+    const code = parseInt(weatherCode);
+    
+    // Conditions selon l'heure de prière
+    const isNight = (prayer === 'isha' || prayer === 'fajr');
+    
+    // Neige (codes 323-395)
+    if (code >= 323 && code <= 395) {
+        if (code >= 371 || code === 338 || code === 395) {
+            return { icon: '❄️', animation: 'heavy-snow' };
+        }
+        return { icon: '🌨️', animation: 'snow' };
+    }
+    
+    // Pluie (codes 293-365)
+    if (code >= 293 && code <= 365) {
+        if (code === 302 || code === 308 || code === 359 || code === 365) {
+            return { icon: '🌧️', animation: 'heavy-rain' };
+        }
+        if (code >= 200 && code <= 232) {
+            return { icon: '⛈️', animation: 'thunderstorm' };
+        }
+        return { icon: '🌦️', animation: 'rain' };
+    }
+    
+    // Bruine (codes 263-284)
+    if (code >= 263 && code <= 284) {
+        return { icon: '🌧️', animation: 'drizzle' };
+    }
+    
+    // Orage (codes 200-232 ou 386-392)
+    if ((code >= 200 && code <= 232) || (code >= 386 && code <= 392)) {
+        return { icon: '⛈️', animation: 'thunderstorm' };
+    }
+    
+    // Brouillard (codes 143-260)
+    if (code === 143 || code === 248 || code === 260) {
+        return { icon: '🌫️', animation: 'fog' };
+    }
+    
+    // Nuageux (codes 119-122)
+    if (code === 119 || code === 122) {
+        return { icon: isNight ? '☁️' : '⛅', animation: 'clouds' };
+    }
+    
+    // Partiellement nuageux (116)
+    if (code === 116) {
+        return { icon: isNight ? '🌙' : '🌤️', animation: 'cloudy' };
+    }
+    
+    // Clair (113)
+    if (isNight) {
+        return { icon: '🌙', animation: 'clear-night' };
+    } else {
+        return { icon: '☀️', animation: 'sunny' };
+    }
+}
+
+// Initialiser la météo pour toutes les villes affichées
+function initWeatherForAllCities() {
+    // Ville 1 (toujours Montréal au début)
+    const city1Select = document.getElementById('city1-select');
+    if (city1Select) {
+        const selectedCity = cities.find(c => c.name === city1Select.value);
+        if (selectedCity) {
+            fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 1);
+        }
+    }
+    
+    // Ville 2 si visible
+    const city2Card = document.getElementById('city2-card');
+    if (city2Card && city2Card.style.display !== 'none') {
+        const city2Select = document.getElementById('city2-select');
+        if (city2Select) {
+            const selectedCity = cities.find(c => c.name === city2Select.value);
+            if (selectedCity) {
+                fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 2);
+            }
+        }
+    }
+}
+
+// Rafraîchir la météo toutes les 30 minutes
+setInterval(initWeatherForAllCities, 30 * 60 * 1000);
+
+// ========== FIN GESTION MÉTÉO ==========
+
 // Convertir degrés en radians
 function toRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -1079,3 +1242,37 @@ function toRadians(degrees) {
 function toDegrees(radians) {
     return radians * (180 / Math.PI);
 }
+
+// ========== INITIALISATION AU CHARGEMENT ==========
+
+// Attendre que la page soit chargée
+setTimeout(() => {
+    // Initialiser la météo après un court délai
+    initWeatherForAllCities();
+    
+    // Rafraîchir la météo quand l'utilisateur change de ville
+    const city1Select = document.getElementById('city1-select');
+    const city2Select = document.getElementById('city2-select');
+    
+    if (city1Select) {
+        city1Select.addEventListener('change', () => {
+            setTimeout(() => {
+                const selectedCity = cities.find(c => c.name === city1Select.value);
+                if (selectedCity) {
+                    fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 1);
+                }
+            }, 1000);
+        });
+    }
+    
+    if (city2Select) {
+        city2Select.addEventListener('change', () => {
+            setTimeout(() => {
+                const selectedCity = cities.find(c => c.name === city2Select.value);
+                if (selectedCity) {
+                    fetchWeatherForCity(selectedCity.name, selectedCity.latitude, selectedCity.longitude, 2);
+                }
+            }, 1000);
+        });
+    }
+}, 2000); // Attendre 2 secondes après le chargement de la page
