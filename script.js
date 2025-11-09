@@ -1070,28 +1070,101 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
     return distance;
 }
 
-// ========== GESTION DE LA MÉTÉO POUR CHAQUE PRIÈRE ==========
+// ========== GESTION DE LA MÉTÉO TEMPS RÉEL ==========
 
-// Météo par défaut basée sur le mois actuel
-function getDefaultWeatherByMonth() {
-    const month = new Date().getMonth() + 1; // 1-12
-    
-    // Hiver (Déc-Fév): froid et neige
+// Clé API OpenWeatherMap (gratuite - 1000 appels/jour)
+// Obtenez votre clé gratuite sur: https://openweathermap.org/api
+const OPENWEATHER_API_KEY = 'b6907d289e10d714a6e88b30761fae22'; // Clé de démo
+
+// Cache météo
+const weatherCache = new Map();
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
+// Météo par défaut si API ne répond pas
+function getDefaultWeather() {
+    const month = new Date().getMonth() + 1;
     if (month === 12 || month === 1 || month === 2) {
-        return { temp: -5, condition: '338' };
+        return { temp: -5, condition: '338' }; // Hiver
+    } else if (month >= 3 && month <= 5) {
+        return { temp: 10, condition: '116' }; // Printemps
+    } else if (month >= 6 && month <= 8) {
+        return { temp: 25, condition: '113' }; // Été
+    } else {
+        return { temp: 12, condition: '119' }; // Automne
     }
-    // Printemps (Mar-Mai): doux
-    else if (month >= 3 && month <= 5) {
-        return { temp: 10, condition: '116' };
+}
+
+// Récupérer la VRAIE météo en temps réel
+async function fetchRealWeather(cityName, lat, lon, cityIndex) {
+    const cacheKey = `${cityName}-${lat}-${lon}`;
+    
+    // Vérifier le cache
+    const cached = weatherCache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp < CACHE_DURATION)) {
+        console.log(`📦 Météo en cache pour ${cityName}`);
+        updateAllPrayersWeather(cityIndex, cached.temp, cached.condition);
+        return;
     }
-    // Été (Jun-Août): chaud
-    else if (month >= 6 && month <= 8) {
-        return { temp: 25, condition: '113' };
+    
+    try {
+        // Appel API OpenWeatherMap
+        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`;
+        
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Extraire température et condition
+        const temp = Math.round(data.main.temp);
+        const weatherId = data.weather[0].id;
+        const condition = convertOpenWeatherToCode(weatherId);
+        
+        console.log(`🌤️ Météo RÉELLE pour ${cityName}: ${temp}°C`);
+        
+        // Mettre en cache
+        weatherCache.set(cacheKey, {
+            temp: temp,
+            condition: condition,
+            timestamp: Date.now()
+        });
+        
+        // Afficher
+        updateAllPrayersWeather(cityIndex, temp, condition);
+        
+    } catch (error) {
+        console.warn(`⚠️ API météo échouée pour ${cityName}, utilisation météo par défaut`);
+        const defaultWeather = getDefaultWeather();
+        updateAllPrayersWeather(cityIndex, defaultWeather.temp, defaultWeather.condition);
     }
-    // Automne (Sep-Nov): frais
-    else {
-        return { temp: 12, condition: '119' };
+}
+
+// Convertir les codes OpenWeatherMap vers nos codes
+function convertOpenWeatherToCode(weatherId) {
+    // Codes OpenWeatherMap:
+    // 2xx = Orage, 3xx = Bruine, 5xx = Pluie
+    // 6xx = Neige, 7xx = Atmosphère, 800 = Clair, 80x = Nuages
+    
+    if (weatherId >= 200 && weatherId < 300) return '200'; // Orage
+    if (weatherId >= 300 && weatherId < 400) return '263'; // Bruine
+    if (weatherId >= 500 && weatherId < 600) {
+        return weatherId >= 502 ? '308' : '296'; // Pluie légère ou forte
     }
+    if (weatherId >= 600 && weatherId < 700) {
+        return weatherId >= 602 ? '338' : '326'; // Neige légère ou forte
+    }
+    if (weatherId >= 700 && weatherId < 800) return '143'; // Brouillard
+    if (weatherId === 800) return '113'; // Clair
+    if (weatherId === 801 || weatherId === 802) return '116'; // Peu nuageux
+    if (weatherId === 803 || weatherId === 804) return '119'; // Nuageux
+    
+    return '113'; // Par défaut: clair
 }
 
 // Obtenir l'icône météo selon la prière et la condition
@@ -1155,31 +1228,56 @@ function updatePrayerWeather(cityIndex, prayer, temp, condition) {
     }
 }
 
-// Afficher la météo par défaut pour une ville
-function setDefaultWeatherForCity(cityIndex) {
-    const weather = getDefaultWeatherByMonth();
+// Mettre à jour toutes les prières d'une ville
+function updateAllPrayersWeather(cityIndex, temp, condition) {
     const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-    
     prayers.forEach(prayer => {
-        updatePrayerWeather(cityIndex, prayer, weather.temp, weather.condition);
+        updatePrayerWeather(cityIndex, prayer, temp, condition);
     });
 }
 
-// Initialiser la météo pour toutes les villes
-function initAllWeather() {
-    // City 1 (toujours visible)
-    setDefaultWeatherForCity(1);
-    
-    // City 2 (si visible)
-    const city2Card = document.getElementById('city2-card');
-    if (city2Card && city2Card.style.display !== 'none') {
-        setDefaultWeatherForCity(2);
+// Initialiser la météo RÉELLE pour toutes les villes
+function initRealWeather() {
+    // City 1
+    const city1Select = document.getElementById('city1-select');
+    if (city1Select) {
+        const cityName = city1Select.value;
+        const selectedCity = cities.find(c => c.name === cityName);
+        if (selectedCity) {
+            console.log(`🌍 Récupération météo pour ${cityName}...`);
+            fetchRealWeather(
+                selectedCity.name,
+                selectedCity.latitude,
+                selectedCity.longitude,
+                1
+            );
+        }
     }
     
-    console.log('Météo initialisée avec succès!');
+    // City 2 si visible
+    const city2Card = document.getElementById('city2-card');
+    if (city2Card && city2Card.style.display !== 'none') {
+        const city2Select = document.getElementById('city2-select');
+        if (city2Select) {
+            const cityName = city2Select.value;
+            const selectedCity = cities.find(c => c.name === cityName);
+            if (selectedCity) {
+                console.log(`🌍 Récupération météo pour ${cityName}...`);
+                fetchRealWeather(
+                    selectedCity.name,
+                    selectedCity.latitude,
+                    selectedCity.longitude,
+                    2
+                );
+            }
+        }
+    }
 }
 
-// ========== FIN GESTION MÉTÉO ==========
+// Rafraîchir la météo toutes les 10 minutes
+setInterval(initRealWeather, 10 * 60 * 1000);
+
+// ========== FIN GESTION MÉTÉO TEMPS RÉEL ==========
 
 // Convertir degrés en radians
 function toRadians(degrees) {
@@ -1195,8 +1293,26 @@ function toDegrees(radians) {
 
 // Attendre que la page soit chargée
 setTimeout(() => {
-    // Initialiser la météo IMMÉDIATEMENT
-    initAllWeather();
+    // Initialiser la météo RÉELLE en temps réel
+    initRealWeather();
     
-    console.log('🌤️ Météo activée!');
-}, 500); // Seulement 500ms de délai
+    console.log('🌤️ Météo TEMPS RÉEL activée!');
+}, 1000); // 1 seconde pour laisser charger la page
+
+// Rafraîchir quand l'utilisateur change de ville
+document.addEventListener('DOMContentLoaded', () => {
+    const city1Select = document.getElementById('city1-select');
+    const city2Select = document.getElementById('city2-select');
+    
+    if (city1Select) {
+        city1Select.addEventListener('change', () => {
+            setTimeout(initRealWeather, 500);
+        });
+    }
+    
+    if (city2Select) {
+        city2Select.addEventListener('change', () => {
+            setTimeout(initRealWeather, 500);
+        });
+    }
+});
