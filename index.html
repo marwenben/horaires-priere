@@ -28,6 +28,10 @@
                     <span class="tool-icon">📿</span>
                     <span data-fr="Tasbih" data-ar="التسبيح">Tasbih</span>
                 </button>
+                <button id="qibla-btn" class="tool-btn" title="Direction Qibla">
+                    <span class="tool-icon">🧭</span>
+                    <span data-fr="Qibla" data-ar="القبلة">Qibla</span>
+                </button>
             </div>
             
             <h1 class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</h1>
@@ -181,6 +185,57 @@
                     </div>
                 </div>
                 <p class="next-prayer" id="city2-next"></p>
+            </div>
+        </div>
+
+        <!-- Modal Qibla -->
+        <div id="qibla-modal" class="modal">
+            <div class="modal-content qibla-modal-content">
+                <div class="modal-header">
+                    <h2>
+                        <span data-fr="🧭 Direction de la Qibla" data-ar="🧭 اتجاه القبلة">🧭 Direction de la Qibla</span>
+                    </h2>
+                    <button class="close-btn" id="close-qibla">&times;</button>
+                </div>
+                <div class="modal-body qibla-body">
+                    <div class="qibla-info" id="qibla-info">
+                        <p data-fr="Détection de votre position..." data-ar="جاري تحديد موقعك...">Détection de votre position...</p>
+                    </div>
+                    
+                    <div class="qibla-compass" id="qibla-compass-container">
+                        <div class="compass-circle">
+                            <div class="compass-needle" id="compass-needle">
+                                <div class="needle-north">🕋</div>
+                                <div class="needle-arrow">▲</div>
+                            </div>
+                            <div class="compass-directions">
+                                <div class="direction north">N</div>
+                                <div class="direction east">E</div>
+                                <div class="direction south">S</div>
+                                <div class="direction west">O</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="qibla-details" id="qibla-details">
+                        <div class="detail-item">
+                            <span class="detail-label" data-fr="Angle:" data-ar="الزاوية:">Angle:</span>
+                            <span class="detail-value" id="qibla-angle">--°</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label" data-fr="Distance vers La Mecque:" data-ar="المسافة إلى مكة:">Distance vers La Mecque:</span>
+                            <span class="detail-value" id="qibla-distance">-- km</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label" data-fr="Votre position:" data-ar="موقعك:">Votre position:</span>
+                            <span class="detail-value" id="user-location">--</span>
+                        </div>
+                    </div>
+                    
+                    <div class="qibla-note">
+                        <p data-fr="💡 Orientez votre appareil vers le Nord pour utiliser la boussole" data-ar="💡 وجّه جهازك نحو الشمال لاستخدام البوصلة">💡 Orientez votre appareil vers le Nord pour utiliser la boussole</p>
+                    </div>
+                </div>
             </div>
         </div>
 
