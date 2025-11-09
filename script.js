@@ -502,6 +502,7 @@ function highlightCurrentPrayer(cityKey, timings) {
         };
     });
 
+    // Retirer les classes des prières
     for (let i = 0; i < prayerTimes.length; i++) {
         const prayerItem = document.querySelector(`#${cityKey}-${prayerTimes[i].name.toLowerCase()}`).parentElement;
         prayerItem.classList.remove('current');
@@ -516,8 +517,17 @@ function highlightCurrentPrayer(cityKey, timings) {
         }
     }
 
+    // Gérer les images de fond de la carte
+    const cityCard = document.getElementById(`${cityKey}-card`);
+    cityCard.classList.remove('current-prayer-fajr', 'current-prayer-dhuhr', 'current-prayer-asr', 'current-prayer-maghrib', 'current-prayer-isha');
+
     if (!currentPrayer) {
         nextPrayer = prayerTimes[0];
+        // Si on est avant Fajr (début de journée), afficher l'image de nuit (Isha)
+        cityCard.classList.add('current-prayer-isha');
+    } else {
+        // Ajouter la classe de la prière actuelle pour l'image de fond
+        cityCard.classList.add(`current-prayer-${currentPrayer.name.toLowerCase()}`);
     }
 
     if (currentPrayer) {
