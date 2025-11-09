@@ -124,6 +124,20 @@
             <!-- Ville 1 -->
             <div class="city-card" id="city1-card">
                 <h2 id="city1-name">📍 Montréal, Canada</h2>
+                
+                <!-- Météo en temps réel -->
+                <div class="weather-container" id="city1-weather">
+                    <div class="weather-icon-wrapper">
+                        <div class="weather-icon-animated" id="city1-weather-icon">
+                            <div class="weather-loading">⏳</div>
+                        </div>
+                    </div>
+                    <div class="weather-info">
+                        <div class="weather-temp" id="city1-temp">--°C</div>
+                        <div class="weather-desc" id="city1-weather-desc">Chargement...</div>
+                    </div>
+                </div>
+                
                 <div class="local-time">
                     <span class="clock-icon">🕐</span>
                     <span data-fr="Heure locale:" data-ar="الوقت المحلي:">Heure locale:</span>
@@ -131,24 +145,54 @@
                 </div>
                 <div id="city1-prayers" class="prayers-list">
                     <div class="prayer-item prayer-fajr" data-prayer="fajr">
-                        <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
-                        <span class="prayer-time" id="city1-fajr">--:--</span>
+                        <div class="prayer-info-left">
+                            <span class="prayer-name" data-fr="Fajr" data-ar="الفجر">Fajr</span>
+                            <span class="prayer-time" id="city1-fajr">--:--</span>
+                        </div>
+                        <div class="prayer-weather" id="city1-fajr-weather">
+                            <div class="weather-icon"></div>
+                            <span class="weather-temp">--°</span>
+                        </div>
                     </div>
                     <div class="prayer-item prayer-dhuhr" data-prayer="dhuhr">
-                        <span class="prayer-name" data-fr="Dhuhr" data-ar="الظهر">Dhuhr</span>
-                        <span class="prayer-time" id="city1-dhuhr">--:--</span>
+                        <div class="prayer-info-left">
+                            <span class="prayer-name" data-fr="Dhuhr" data-ar="الظهر">Dhuhr</span>
+                            <span class="prayer-time" id="city1-dhuhr">--:--</span>
+                        </div>
+                        <div class="prayer-weather" id="city1-dhuhr-weather">
+                            <div class="weather-icon"></div>
+                            <span class="weather-temp">--°</span>
+                        </div>
                     </div>
                     <div class="prayer-item prayer-asr" data-prayer="asr">
-                        <span class="prayer-name" data-fr="Asr" data-ar="العصر">Asr</span>
-                        <span class="prayer-time" id="city1-asr">--:--</span>
+                        <div class="prayer-info-left">
+                            <span class="prayer-name" data-fr="Asr" data-ar="العصر">Asr</span>
+                            <span class="prayer-time" id="city1-asr">--:--</span>
+                        </div>
+                        <div class="prayer-weather" id="city1-asr-weather">
+                            <div class="weather-icon"></div>
+                            <span class="weather-temp">--°</span>
+                        </div>
                     </div>
                     <div class="prayer-item prayer-maghrib" data-prayer="maghrib">
-                        <span class="prayer-name" data-fr="Maghrib" data-ar="المغرب">Maghrib</span>
-                        <span class="prayer-time" id="city1-maghrib">--:--</span>
+                        <div class="prayer-info-left">
+                            <span class="prayer-name" data-fr="Maghrib" data-ar="المغرب">Maghrib</span>
+                            <span class="prayer-time" id="city1-maghrib">--:--</span>
+                        </div>
+                        <div class="prayer-weather" id="city1-maghrib-weather">
+                            <div class="weather-icon"></div>
+                            <span class="weather-temp">--°</span>
+                        </div>
                     </div>
                     <div class="prayer-item prayer-isha" data-prayer="isha">
-                        <span class="prayer-name" data-fr="Isha" data-ar="العشاء">Isha</span>
-                        <span class="prayer-time" id="city1-isha">--:--</span>
+                        <div class="prayer-info-left">
+                            <span class="prayer-name" data-fr="Isha" data-ar="العشاء">Isha</span>
+                            <span class="prayer-time" id="city1-isha">--:--</span>
+                        </div>
+                        <div class="prayer-weather" id="city1-isha-weather">
+                            <div class="weather-icon"></div>
+                            <span class="weather-temp">--°</span>
+                        </div>
                     </div>
                 </div>
                 <p class="next-prayer" id="city1-next"></p>
