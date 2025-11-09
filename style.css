@@ -1074,27 +1074,27 @@ footer p {
     }
 }
 
-/* Styles pour Qibla - Design Google-like */
+/* Styles pour Qibla - Design simple et clair */
 .qibla-modal-content {
-    max-width: 500px;
+    max-width: 550px;
 }
 
 .qibla-body {
     text-align: center;
-    padding: 10px;
+    padding: 20px 10px;
 }
 
 .qibla-status {
     padding: 15px;
     background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(30, 60, 114, 0.1);
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .status-text {
     margin: 0;
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 600;
     color: #1e3c72;
 }
@@ -1107,282 +1107,274 @@ footer p {
     color: #dc3545;
 }
 
-/* Boussole principale */
-.qibla-compass-container {
-    margin: 20px auto;
+/* Conteneur de la boussole */
+.qibla-compass-wrapper {
+    position: relative;
     width: 320px;
     height: 320px;
-    position: relative;
+    margin: 0 auto 30px;
 }
 
-.compass-outer-ring {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-/* Anneau avec degrés */
-.compass-ring {
-    width: 100%;
-    height: 100%;
+/* Direction Qibla FIXE (Kaaba toujours en haut) */
+.qibla-direction-fixed {
     position: absolute;
-    border-radius: 50%;
-}
-
-.degree-marker {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.degree-marker span {
-    position: absolute;
-    top: 5px;
-    font-size: 0.9em;
-    font-weight: bold;
-    color: #1e3c72;
-    background: white;
-    padding: 2px 8px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Cercle principal */
-.compass-main-circle {
-    width: 280px;
-    height: 280px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
-    border: 4px solid #1e3c72;
-    box-shadow: 
-        0 0 0 8px rgba(30, 60, 114, 0.1),
-        0 10px 30px rgba(30, 60, 114, 0.2),
-        inset 0 0 30px rgba(30, 60, 114, 0.05);
-}
-
-/* Nord cardinal fixe */
-.cardinal-north {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 2em;
-    font-weight: bold;
-    color: #dc3545;
-    text-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
-    z-index: 5;
-}
-
-/* Flèche Qibla */
-.qibla-arrow {
-    position: absolute;
-    width: 100%;
-    height: 100%;
     top: 0;
-    left: 0;
-    transition: transform 0.3s ease-out;
-}
-
-.arrow-container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-.kaaba-icon {
-    position: absolute;
-    top: 25px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 2.5em;
-    z-index: 10;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.kaaba-top {
+    font-size: 3em;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     animation: pulse-kaaba 2s ease-in-out infinite;
 }
 
 @keyframes pulse-kaaba {
-    0%, 100% {
-        transform: translateX(-50%) scale(1);
-    }
-    50% {
-        transform: translateX(-50%) scale(1.1);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
-.arrow-line {
-    position: absolute;
-    width: 6px;
-    height: 90px;
-    top: 60px;
-    left: 50%;
-    margin-left: -3px;
-    background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
-    border-radius: 3px;
+.qibla-line {
+    width: 4px;
+    height: 80px;
+    background: linear-gradient(180deg, #22c55e 0%, rgba(34, 197, 94, 0.3) 100%);
+    border-radius: 2px;
     box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
 }
 
-.arrow-head {
-    position: absolute;
-    top: 145px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 3em;
-    color: #22c55e;
-    filter: drop-shadow(0 4px 8px rgba(34, 197, 94, 0.5));
-}
-
-/* Centre de la boussole */
-.compass-center {
+/* Boussole rotative (le cercle qui tourne) */
+.compass-rotating {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 20px;
-    height: 20px;
-    margin-left: -10px;
-    margin-top: -10px;
+    width: 280px;
+    height: 280px;
+    margin-left: -140px;
+    margin-top: -140px;
+    transition: transform 0.5s ease-out;
+}
+
+.compass-circle-main {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+    border: 4px solid #1e3c72;
+    position: relative;
+    box-shadow: 
+        0 0 0 8px rgba(30, 60, 114, 0.1),
+        0 8px 25px rgba(30, 60, 114, 0.2),
+        inset 0 0 20px rgba(30, 60, 114, 0.05);
+}
+
+/* Nord (rouge - sur le cercle qui tourne) */
+.compass-north-marker {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.north-triangle {
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 25px solid #dc3545;
+    margin: 0 auto 5px;
+    filter: drop-shadow(0 2px 4px rgba(220, 53, 69, 0.4));
+}
+
+.north-label {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #dc3545;
+    text-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* Autres directions cardinales */
+.compass-east-marker,
+.compass-south-marker,
+.compass-west-marker {
+    position: absolute;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.compass-east-marker {
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.compass-south-marker {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.compass-west-marker {
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Lignes de degrés */
+.degree-line {
+    position: absolute;
+    width: 2px;
+    height: 15px;
+    background: #6c757d;
+    top: 5px;
+    left: 50%;
+    margin-left: -1px;
+    transform-origin: 50% 135px;
+}
+
+.degree-line.d0 { transform: rotate(0deg); }
+.degree-line.d45 { transform: rotate(45deg); }
+.degree-line.d90 { transform: rotate(90deg); }
+.degree-line.d135 { transform: rotate(135deg); }
+.degree-line.d180 { transform: rotate(180deg); }
+.degree-line.d225 { transform: rotate(225deg); }
+.degree-line.d270 { transform: rotate(270deg); }
+.degree-line.d315 { transform: rotate(315deg); }
+
+/* Point central */
+.compass-center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    margin-top: -8px;
     background: radial-gradient(circle, #1e3c72 0%, #2a5298 100%);
     border-radius: 50%;
     border: 3px solid white;
     box-shadow: 0 2px 8px rgba(30, 60, 114, 0.4);
-    z-index: 15;
+    z-index: 25;
 }
 
-/* Boîte d'informations */
-.qibla-info-box {
-    margin: 25px auto;
-    max-width: 400px;
+/* Cartes d'information */
+.qibla-info-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.info-card {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.info-row {
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     display: flex;
     align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e9ecef;
+    gap: 12px;
 }
 
-.info-row:last-child {
-    border-bottom: none;
+.info-card.full-width {
+    grid-column: 1 / -1;
 }
 
 .info-icon {
-    font-size: 1.8em;
-    margin-right: 15px;
+    font-size: 2em;
+    flex-shrink: 0;
 }
 
-.info-content {
+.info-details {
     flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: left;
 }
 
 .info-label {
-    font-size: 0.95em;
+    font-size: 0.85em;
     color: #6c757d;
     font-weight: 500;
+    display: block;
+    margin-bottom: 4px;
 }
 
 .info-value {
     font-size: 1.3em;
     font-weight: bold;
     color: #1e3c72;
+    display: block;
 }
 
-.info-value.small {
-    font-size: 0.9em;
-}
-
-.qibla-degree {
-    font-size: 1.8em;
+.info-value.big {
+    font-size: 2em;
     color: #22c55e;
 }
 
-/* Instructions */
-.qibla-instructions {
-    margin-top: 20px;
-    padding: 20px;
+.info-value.small {
+    font-size: 1em;
+}
+
+/* Aide */
+.qibla-help {
     background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
-    border-radius: 15px;
+    border-radius: 12px;
+    padding: 15px;
     text-align: left;
 }
 
-.instruction-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.instruction-item:last-child {
-    margin-bottom: 0;
-}
-
-.instruction-number {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    background: #1e3c72;
-    color: white;
-    border-radius: 50%;
+.help-title {
     font-weight: bold;
-    font-size: 0.9em;
-    margin-right: 12px;
-    flex-shrink: 0;
-}
-
-.instruction-text {
-    font-size: 0.95em;
     color: #856404;
-    font-weight: 500;
+    margin: 0 0 8px 0;
+    font-size: 1em;
 }
 
-.arabic .instruction-text,
+.help-text {
+    color: #856404;
+    margin: 0;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
 .arabic .info-label,
-.arabic .status-text {
+.arabic .status-text,
+.arabic .help-title,
+.arabic .help-text {
     font-family: 'Amiri', serif;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .qibla-compass-container {
+    .qibla-compass-wrapper {
         width: 280px;
         height: 280px;
     }
     
-    .compass-main-circle {
+    .compass-rotating {
         width: 240px;
         height: 240px;
+        margin-left: -120px;
+        margin-top: -120px;
     }
     
-    .kaaba-icon {
-        font-size: 2em;
-        top: 20px;
-    }
-    
-    .arrow-line {
-        height: 75px;
-        top: 50px;
-    }
-    
-    .arrow-head {
-        top: 120px;
+    .kaaba-top {
         font-size: 2.5em;
     }
     
-    .degree-marker span {
-        font-size: 0.75em;
-        padding: 1px 5px;
+    .qibla-line {
+        height: 65px;
+    }
+    
+    .info-card {
+        padding: 12px;
+    }
+    
+    .info-icon {
+        font-size: 1.5em;
     }
 }
 
