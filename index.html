@@ -198,42 +198,81 @@
                     <button class="close-btn" id="close-qibla">&times;</button>
                 </div>
                 <div class="modal-body qibla-body">
-                    <div class="qibla-info" id="qibla-info">
-                        <p data-fr="Détection de votre position..." data-ar="جاري تحديد موقعك...">Détection de votre position...</p>
+                    <!-- Message d'état -->
+                    <div class="qibla-status" id="qibla-status">
+                        <p class="status-text" id="status-text" data-fr="Détection de votre position..." data-ar="جاري تحديد موقعك...">Détection de votre position...</p>
                     </div>
                     
-                    <div class="qibla-compass" id="qibla-compass-container">
-                        <div class="compass-circle">
-                            <div class="compass-needle" id="compass-needle">
-                                <div class="needle-north">🕋</div>
-                                <div class="needle-arrow">▲</div>
+                    <!-- Boussole principale -->
+                    <div class="qibla-compass-container" id="qibla-compass-main">
+                        <div class="compass-outer-ring">
+                            <!-- Cercle extérieur avec degrés -->
+                            <div class="compass-ring" id="compass-ring">
+                                <div class="degree-marker" style="transform: rotate(0deg)"><span>0°</span></div>
+                                <div class="degree-marker" style="transform: rotate(45deg)"><span>45°</span></div>
+                                <div class="degree-marker" style="transform: rotate(90deg)"><span>90°</span></div>
+                                <div class="degree-marker" style="transform: rotate(135deg)"><span>135°</span></div>
+                                <div class="degree-marker" style="transform: rotate(180deg)"><span>180°</span></div>
+                                <div class="degree-marker" style="transform: rotate(225deg)"><span>225°</span></div>
+                                <div class="degree-marker" style="transform: rotate(270deg)"><span>270°</span></div>
+                                <div class="degree-marker" style="transform: rotate(315deg)"><span>315°</span></div>
                             </div>
-                            <div class="compass-directions">
-                                <div class="direction north">N</div>
-                                <div class="direction east">E</div>
-                                <div class="direction south">S</div>
-                                <div class="direction west">O</div>
+                            
+                            <!-- Cercle principal avec directions -->
+                            <div class="compass-main-circle">
+                                <!-- Direction Nord fixe -->
+                                <div class="cardinal-north">N</div>
+                                
+                                <!-- Flèche Qibla (tourne vers La Mecque) -->
+                                <div class="qibla-arrow" id="qibla-arrow">
+                                    <div class="arrow-container">
+                                        <div class="kaaba-icon">🕋</div>
+                                        <div class="arrow-line"></div>
+                                        <div class="arrow-head">▲</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Point central -->
+                                <div class="compass-center"></div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="qibla-details" id="qibla-details">
-                        <div class="detail-item">
-                            <span class="detail-label" data-fr="Angle:" data-ar="الزاوية:">Angle:</span>
-                            <span class="detail-value" id="qibla-angle">--°</span>
+                    <!-- Informations détaillées -->
+                    <div class="qibla-info-box" id="qibla-info-box">
+                        <div class="info-row">
+                            <span class="info-icon">📍</span>
+                            <div class="info-content">
+                                <span class="info-label" data-fr="Direction Qibla" data-ar="اتجاه القبلة">Direction Qibla</span>
+                                <span class="info-value qibla-degree" id="qibla-degree-display">--°</span>
+                            </div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label" data-fr="Distance vers La Mecque:" data-ar="المسافة إلى مكة:">Distance vers La Mecque:</span>
-                            <span class="detail-value" id="qibla-distance">-- km</span>
+                        <div class="info-row">
+                            <span class="info-icon">📏</span>
+                            <div class="info-content">
+                                <span class="info-label" data-fr="Distance" data-ar="المسافة">Distance</span>
+                                <span class="info-value" id="qibla-distance-display">-- km</span>
+                            </div>
                         </div>
-                        <div class="detail-item">
-                            <span class="detail-label" data-fr="Votre position:" data-ar="موقعك:">Votre position:</span>
-                            <span class="detail-value" id="user-location">--</span>
+                        <div class="info-row">
+                            <span class="info-icon">🌍</span>
+                            <div class="info-content">
+                                <span class="info-label" data-fr="Votre position" data-ar="موقعك">Votre position</span>
+                                <span class="info-value small" id="user-position-display">--</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="qibla-note">
-                        <p data-fr="💡 Orientez votre appareil vers le Nord pour utiliser la boussole" data-ar="💡 وجّه جهازك نحو الشمال لاستخدام البوصلة">💡 Orientez votre appareil vers le Nord pour utiliser la boussole</p>
+                    <!-- Instructions -->
+                    <div class="qibla-instructions" id="qibla-instructions">
+                        <div class="instruction-item">
+                            <span class="instruction-number">1</span>
+                            <span class="instruction-text" data-fr="Tenez votre appareil à plat" data-ar="امسك جهازك بشكل مسطح">Tenez votre appareil à plat</span>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="instruction-number">2</span>
+                            <span class="instruction-text" data-fr="Tournez jusqu'à ce que la flèche 🕋 pointe vers le haut" data-ar="استدر حتى يشير السهم 🕋 للأعلى">Tournez jusqu'à ce que la flèche 🕋 pointe vers le haut</span>
+                        </div>
                     </div>
                 </div>
             </div>
