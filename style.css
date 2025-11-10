@@ -643,22 +643,160 @@ header h1 {
     z-index: 1;
 }
 
+/* ========== INDICATEUR PROCHAINE PRIÈRE - ULTRA ANIMÉ ========== */
+
 .next-prayer {
     text-align: center;
-    padding: 15px;
-    background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
-    border-radius: 10px;
-    color: #856404;
-    font-weight: 600;
-    margin-top: 15px;
-    border: 2px solid #ffd700;
-    box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+    padding: 20px 25px;
+    background: linear-gradient(135deg, 
+        #ffd700 0%, 
+        #ffed4e 25%, 
+        #ffd700 50%, 
+        #ffed4e 75%, 
+        #ffd700 100%);
+    background-size: 200% 200%;
+    border-radius: 15px;
+    color: #1e3c72;
+    font-weight: 800;
+    font-size: 1.3em;
+    margin-top: 20px;
+    border: 3px solid #ff8c00;
+    box-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.6),
+        0 0 40px rgba(255, 215, 0, 0.4),
+        inset 0 0 20px rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: 
+        pulse-next-prayer 2s ease-in-out infinite,
+        gradient-shift 3s ease infinite;
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+}
+
+/* Animation de pulsation */
+@keyframes pulse-next-prayer {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 
+            0 0 20px rgba(255, 215, 0, 0.6),
+            0 0 40px rgba(255, 215, 0, 0.4),
+            inset 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        transform: scale(1.03);
+        box-shadow: 
+            0 0 30px rgba(255, 215, 0, 0.8),
+            0 0 60px rgba(255, 215, 0, 0.6),
+            inset 0 0 30px rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Animation du gradient qui bouge */
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Effet de brillance qui traverse */
+.next-prayer::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        transparent 40%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 60%,
+        transparent 100%
+    );
+    animation: shine-sweep 3s ease-in-out infinite;
+}
+
+@keyframes shine-sweep {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    50%, 100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+/* Icône animée avant le texte */
+.next-prayer::after {
+    content: '⏰';
+    position: absolute;
+    left: 15px;
+    font-size: 2em;
+    animation: bounce-icon 2s ease-in-out infinite;
+}
+
+@keyframes bounce-icon {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-10px) rotate(-10deg);
+    }
+    75% {
+        transform: translateY(-10px) rotate(10deg);
+    }
+}
+
+/* Effet au survol */
+.next-prayer:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 
+        0 0 40px rgba(255, 215, 0, 0.9),
+        0 0 80px rgba(255, 215, 0, 0.6),
+        inset 0 0 30px rgba(255, 255, 255, 0.5);
+    border-color: #ff6347;
+    cursor: pointer;
+}
+
+/* Texte avec ombre lumineuse */
+.next-prayer {
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.3),
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 215, 0, 0.6);
 }
 
 .arabic .next-prayer {
     font-family: 'Amiri', serif;
-    font-size: 1.1em;
+    font-size: 1.4em;
 }
+
+/* Particules flottantes autour */
+.next-prayer-container {
+    position: relative;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .next-prayer {
+        font-size: 1.1em;
+        padding: 15px 20px;
+    }
+    
+    .next-prayer::after {
+        font-size: 1.5em;
+        left: 10px;
+    }
+}
+
+/* ========== FIN INDICATEUR PROCHAINE PRIÈRE ========== */
 
 /* ========== MÉTÉO DANS LES PRIÈRES - ANIMATIONS ========== */
 
