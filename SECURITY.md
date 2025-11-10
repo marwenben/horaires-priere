@@ -2,20 +2,32 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 1.0.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability in this prayer times website, please report it by creating an issue in this repository.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+We will respond as quickly as possible.
+
+Thank you for helping to keep this project secure!
+
+---
+
+# Politique de Sécurité
+
+## Versions Supportées
+
+| Version | Supportée          |
+| ------- | ------------------ |
+| 1.0.x   | :white_check_mark: |
+
+## Signaler une Vulnérabilité
+
+Si vous découvrez une vulnérabilité de sécurité dans ce site d'horaires de prière, veuillez la signaler en créant une issue dans ce dépôt.
+
+Nous répondrons le plus rapidement possible.
+
+Merci d'aider à garder ce projet sécurisé!
