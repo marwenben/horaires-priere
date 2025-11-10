@@ -1281,29 +1281,48 @@ function getWeatherIconFromCode(prayer, weatherCode) {
 
 // Mettre à jour la météo d'une prière
 function updatePrayerWeather(cityIndex, prayer, temp, weatherCode) {
+    console.log(`🔧 updatePrayerWeather: city${cityIndex}-${prayer}, temp=${temp}, code=${weatherCode}`);
+    
     const weatherDiv = document.getElementById(`city${cityIndex}-${prayer}-weather`);
-    if (!weatherDiv) return;
+    if (!weatherDiv) {
+        console.error(`❌ Element NOT FOUND: city${cityIndex}-${prayer}-weather`);
+        return;
+    }
+    console.log(`✅ Element FOUND: city${cityIndex}-${prayer}-weather`);
     
     const iconDiv = weatherDiv.querySelector('.weather-icon');
     const tempSpan = weatherDiv.querySelector('.weather-temp');
     
+    if (!iconDiv) {
+        console.error(`❌ .weather-icon NOT FOUND in city${cityIndex}-${prayer}-weather`);
+    }
+    if (!tempSpan) {
+        console.error(`❌ .weather-temp NOT FOUND in city${cityIndex}-${prayer}-weather`);
+    }
+    
     if (tempSpan) {
+        const oldText = tempSpan.textContent;
         tempSpan.textContent = temp + '°';
+        console.log(`✅ Température MISE À JOUR: "${oldText}" → "${temp}°"`);
     }
     
     if (iconDiv) {
         const weatherInfo = getWeatherIconFromCode(prayer, weatherCode);
+        const oldIcon = iconDiv.textContent;
         iconDiv.textContent = weatherInfo.icon;
         iconDiv.setAttribute('data-weather', weatherInfo.anim);
+        console.log(`✅ Icône MISE À JOUR: "${oldIcon}" → "${weatherInfo.icon}" (${weatherInfo.anim})`);
     }
 }
 
 // Mettre à jour toutes les prières d'une ville
 function updateAllPrayersWeather(cityIndex, temp, weatherCode) {
+    console.log(`🎨 updateAllPrayersWeather: cityIndex=${cityIndex}, temp=${temp}, code=${weatherCode}`);
     const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
     prayers.forEach(prayer => {
         updatePrayerWeather(cityIndex, prayer, temp, weatherCode);
     });
+    console.log(`✅ Mise à jour terminée pour ville ${cityIndex}`);
 }
 
 // Initialiser la météo RÉELLE pour toutes les villes
