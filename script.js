@@ -589,6 +589,14 @@ function highlightCurrentPrayer(cityKey, timings) {
 
     if (nextPrayer) {
         const nextElement = document.getElementById(`${cityKey}-next`);
+        
+        if (!nextElement) {
+            console.error(`❌ Element ${cityKey}-next NOT FOUND!`);
+            return;
+        }
+        
+        console.log(`📋 Mise à jour prochaine prière pour ${cityKey}: ${nextPrayer.name}`);
+        
         const timeUntil = calculateTimeUntil(nextPrayer.time, currentTime);
         const t = translations[currentLang];
         
@@ -604,7 +612,12 @@ function highlightCurrentPrayer(cityKey, timings) {
             prayerName = arabicNames[nextPrayer.name];
         }
         
-        nextElement.textContent = `${t.nextPrayer}: ${prayerName} ${t.at} ${nextPrayer.display} (${t.in} ${timeUntil})`;
+        const nextText = `${t.nextPrayer}: ${prayerName} ${t.at} ${nextPrayer.display} (${t.in} ${timeUntil})`;
+        nextElement.textContent = nextText;
+        
+        console.log(`✅ Texte prochaine prière: "${nextText}"`);
+    } else {
+        console.warn(`⚠️ Pas de prochaine prière trouvée pour ${cityKey}`);
     }
 }
 
