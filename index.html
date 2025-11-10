@@ -107,7 +107,7 @@
             </div>
             
             <!-- Compte à rebours Ramadan -->
-            <div id="ramadan-countdown" class="ramadan-countdown">
+            <div id="ramadan-countdown" class="ramadan-countdown" style="cursor: pointer;" title="Cliquez pour voir le calendrier complet de Ramadan">
                 <div class="ramadan-icon">
                     <video class="ramadan-video" autoplay loop muted playsinline>
                         <source src="ramadan.mp4" type="video/mp4">
@@ -119,6 +119,36 @@
                 </div>
             </div>
         </header>
+
+        <!-- Modal Calendrier Ramadan -->
+        <div id="ramadan-calendar-modal" class="modal">
+            <div class="modal-content ramadan-calendar-content">
+                <span class="close-modal" id="close-ramadan-calendar">&times;</span>
+                <h2 class="calendar-title">
+                    <span class="calendar-icon">🌙</span>
+                    <span data-fr="Calendrier du Ramadan 1446 H" data-ar="تقويم رمضان ١٤٤٦ هـ">Calendrier du Ramadan 1446 H</span>
+                    <span class="calendar-icon">🌙</span>
+                </h2>
+                <p class="calendar-subtitle">
+                    <span data-fr="1er Ramadan ≈ 28 Février 2025" data-ar="١ رمضان ≈ ٢٨ فبراير ٢٠٢٥">1er Ramadan ≈ 28 Février 2025</span>
+                </p>
+                <div id="ramadan-calendar-grid" class="calendar-grid"></div>
+                <div class="calendar-legend">
+                    <div class="legend-item">
+                        <span class="legend-box today-box"></span>
+                        <span data-fr="Aujourd'hui" data-ar="اليوم">Aujourd'hui</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-box weekend-box"></span>
+                        <span data-fr="Weekend" data-ar="عطلة نهاية الأسبوع">Weekend</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-box special-box"></span>
+                        <span data-fr="Nuits spéciales (21-29)" data-ar="الليالي الفضيلة (٢١-٢٩)">Nuits spéciales</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="cities-container">
             <!-- Ville 1 -->
