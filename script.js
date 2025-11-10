@@ -1374,6 +1374,138 @@ function toDegrees(radians) {
     return radians * (180 / Math.PI);
 }
 
+// ========== CALENDRIER RAMADAN ==========
+
+// Dates de Ramadan 1446 (approximatives)
+const ramadanStart = new Date('2025-02-28'); // 1er Ramadan 1446
+const ramadanDays = 30; // Ramadan peut avoir 29 ou 30 jours
+
+// Générer le calendrier Ramadan
+function generateRamadanCalendar() {
+    const calendarGrid = document.getElementById('ramadan-calendar-grid');
+    if (!calendarGrid) return;
+    
+    calendarGrid.innerHTML = '';
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const monthNamesFr = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const monthNamesAr = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    const dayNamesFr = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    const dayNamesAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    
+    console.log('📅 Génération calendrier Ramadan...');
+    
+    for (let i = 1; i <= ramadanDays; i++) {
+        const gregorianDate = new Date(ramadanStart);
+        gregorianDate.setDate(gregorianDate.getDate() + (i - 1));
+        
+        const dayOfWeek = gregorianDate.getDay();
+        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6); // Dimanche ou Samedi
+        const isToday = gregorianDate.getTime() === today.getTime();
+        const isSpecialNight = i >= 21; // Derniers 10 jours
+        
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        
+        if (isToday) {
+            dayElement.classList.add('today');
+        }
+        if (isWeekend) {
+            dayElement.classList.add('weekend');
+        }
+        if (isSpecialNight) {
+            dayElement.classList.add('special-night');
+        }
+        
+        const ramadanDayNum = document.createElement('span');
+        ramadanDayNum.className = 'ramadan-day-num';
+        ramadanDayNum.textContent = i;
+        
+        const gregorianDateSpan = document.createElement('span');
+        gregorianDateSpan.className = 'gregorian-date';
+        const day = gregorianDate.getDate();
+        const month = gregorianDate.getMonth();
+        
+        if (currentLang === 'ar') {
+            gregorianDateSpan.textContent = `${day} ${monthNamesAr[month]}`;
+        } else {
+            gregorianDateSpan.textContent = `${day} ${monthNamesFr[month]}`;
+        }
+        
+        const dayOfWeekSpan = document.createElement('span');
+        dayOfWeekSpan.className = 'day-of-week';
+        dayOfWeekSpan.textContent = currentLang === 'ar' ? dayNamesAr[dayOfWeek] : dayNamesFr[dayOfWeek];
+        
+        dayElement.appendChild(ramadanDayNum);
+        dayElement.appendChild(gregorianDateSpan);
+        dayElement.appendChild(dayOfWeekSpan);
+        
+        calendarGrid.appendChild(dayElement);
+    }
+    
+    console.log(`✅ Calendrier généré: ${ramadanDays} jours`);
+}
+
+// Ouvrir le modal du calendrier Ramadan
+function openRamadanCalendar() {
+    console.log('📅 Ouverture calendrier Ramadan...');
+    
+    const modal = document.getElementById('ramadan-calendar-modal');
+    if (!modal) {
+        console.error('❌ Modal calendrier introuvable!');
+        return;
+    }
+    
+    generateRamadanCalendar();
+    modal.classList.add('active');
+    
+    console.log('✅ Calendrier Ramadan ouvert!');
+}
+
+// Fermer le modal du calendrier Ramadan
+function closeRamadanCalendar() {
+    const modal = document.getElementById('ramadan-calendar-modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Initialiser les événements du calendrier Ramadan
+function initRamadanCalendarEvents() {
+    console.log('🌙 Initialisation événements calendrier Ramadan...');
+    
+    // Clic sur le countdown pour ouvrir le calendrier
+    const ramadanCountdown = document.getElementById('ramadan-countdown');
+    if (ramadanCountdown) {
+        ramadanCountdown.addEventListener('click', openRamadanCalendar);
+        console.log('✅ Événement clic sur countdown ajouté');
+    } else {
+        console.error('❌ ramadan-countdown introuvable');
+    }
+    
+    // Bouton fermer
+    const closeBtn = document.getElementById('close-ramadan-calendar');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeRamadanCalendar);
+        console.log('✅ Événement fermeture ajouté');
+    }
+    
+    // Clic en dehors du modal
+    const modal = document.getElementById('ramadan-calendar-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeRamadanCalendar();
+            }
+        });
+    }
+    
+    console.log('✅ Événements calendrier Ramadan initialisés');
+}
+
+// ========== FIN CALENDRIER RAMADAN ==========
 // ========== INITIALISATION AU CHARGEMENT ==========
 
 // S'assurer que la page est complètement chargée
@@ -1414,4 +1546,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('📡 Backup: Appel initRealWeather...');
         initRealWeather();
     }, 3000);
+    
+    // Initialiser le calendrier Ramadan
+    initRamadanCalendarEvents();
 });
