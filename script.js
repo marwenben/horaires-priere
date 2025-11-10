@@ -5,6 +5,8 @@ const citiesDatabase = {
         country: 'CA',
         method: 2,
         timezone: 'America/Toronto',
+        latitude: 45.5017,
+        longitude: -73.5673,
         displayName: { fr: '🇨🇦 Montréal, Canada', ar: '🇨🇦 مونتريال، كندا' }
     },
     'tunis-tn': {
@@ -12,6 +14,8 @@ const citiesDatabase = {
         country: 'TN',
         method: 5,
         timezone: 'Africa/Tunis',
+        latitude: 36.8065,
+        longitude: 10.1815,
         displayName: { fr: '🇹🇳 Tunis, Tunisie', ar: '🇹🇳 تونس، تونس' }
     },
     'algiers-dz': {
@@ -19,6 +23,8 @@ const citiesDatabase = {
         country: 'DZ',
         method: 5,
         timezone: 'Africa/Algiers',
+        latitude: 36.7538,
+        longitude: 3.0588,
         displayName: { fr: '🇩🇿 Alger, Algérie', ar: '🇩🇿 الجزائر، الجزائر' }
     },
     'mecca-sa': {
@@ -26,6 +32,8 @@ const citiesDatabase = {
         country: 'SA',
         method: 4,
         timezone: 'Asia/Riyadh',
+        latitude: 21.4225,
+        longitude: 39.8262,
         displayName: { fr: '🇸🇦 La Mecque, Arabie Saoudite', ar: '🇸🇦 مكة المكرمة، السعودية' }
     },
     'medina-sa': {
@@ -33,6 +41,8 @@ const citiesDatabase = {
         country: 'SA',
         method: 4,
         timezone: 'Asia/Riyadh',
+        latitude: 24.5247,
+        longitude: 39.5692,
         displayName: { fr: '🇸🇦 Médine, Arabie Saoudite', ar: '🇸🇦 المدينة المنورة، السعودية' }
     },
     'riyadh-sa': {
@@ -40,6 +50,8 @@ const citiesDatabase = {
         country: 'SA',
         method: 4,
         timezone: 'Asia/Riyadh',
+        latitude: 24.7136,
+        longitude: 46.6753,
         displayName: { fr: '🇸🇦 Riyad, Arabie Saoudite', ar: '🇸🇦 الرياض، السعودية' }
     },
     'jeddah-sa': {
@@ -47,6 +59,8 @@ const citiesDatabase = {
         country: 'SA',
         method: 4,
         timezone: 'Asia/Riyadh',
+        latitude: 21.5433,
+        longitude: 39.1728,
         displayName: { fr: '🇸🇦 Jeddah, Arabie Saoudite', ar: '🇸🇦 جدة، السعودية' }
     },
     'cairo-eg': {
@@ -54,6 +68,8 @@ const citiesDatabase = {
         country: 'EG',
         method: 5,
         timezone: 'Africa/Cairo',
+        latitude: 30.0444,
+        longitude: 31.2357,
         displayName: { fr: '🇪🇬 Le Caire, Égypte', ar: '🇪🇬 القاهرة، مصر' }
     },
     'dubai-ae': {
@@ -61,6 +77,8 @@ const citiesDatabase = {
         country: 'AE',
         method: 4,
         timezone: 'Asia/Dubai',
+        latitude: 25.2048,
+        longitude: 55.2708,
         displayName: { fr: '🇦🇪 Dubaï, Émirats Arabes Unis', ar: '🇦🇪 دبي، الإمارات' }
     },
     'abudhabi-ae': {
@@ -68,6 +86,8 @@ const citiesDatabase = {
         country: 'AE',
         method: 4,
         timezone: 'Asia/Dubai',
+        latitude: 24.4539,
+        longitude: 54.3773,
         displayName: { fr: '🇦🇪 Abu Dhabi, Émirats Arabes Unis', ar: '🇦🇪 أبو ظبي، الإمارات' }
     },
     'doha-qa': {
@@ -75,6 +95,8 @@ const citiesDatabase = {
         country: 'QA',
         method: 4,
         timezone: 'Asia/Qatar',
+        latitude: 25.2854,
+        longitude: 51.531,
         displayName: { fr: '🇶🇦 Doha, Qatar', ar: '🇶🇦 الدوحة، قطر' }
     },
     'kuwait-kw': {
@@ -82,6 +104,8 @@ const citiesDatabase = {
         country: 'KW',
         method: 4,
         timezone: 'Asia/Kuwait',
+        latitude: 29.3759,
+        longitude: 47.9774,
         displayName: { fr: '🇰🇼 Koweït, Koweït', ar: '🇰🇼 الكويت، الكويت' }
     },
     'casablanca-ma': {
@@ -89,6 +113,8 @@ const citiesDatabase = {
         country: 'MA',
         method: 5,
         timezone: 'Africa/Casablanca',
+        latitude: 33.5731,
+        longitude: -7.5898,
         displayName: { fr: '🇲🇦 Casablanca, Maroc', ar: '🇲🇦 الدار البيضاء، المغرب' }
     },
     'rabat-ma': {
@@ -96,6 +122,8 @@ const citiesDatabase = {
         country: 'MA',
         method: 5,
         timezone: 'Africa/Casablanca',
+        latitude: 34.0209,
+        longitude: -6.8416,
         displayName: { fr: '🇲🇦 Rabat, Maroc', ar: '🇲🇦 الرباط، المغرب' }
     },
     'istanbul-tr': {
@@ -103,6 +131,8 @@ const citiesDatabase = {
         country: 'TR',
         method: 1,
         timezone: 'Europe/Istanbul',
+        latitude: 41.0082,
+        longitude: 28.9784,
         displayName: { fr: '🇹🇷 Istanbul, Turquie', ar: '🇹🇷 إسطنبول، تركيا' }
     },
     'ankara-tr': {
@@ -110,6 +140,8 @@ const citiesDatabase = {
         country: 'TR',
         method: 1,
         timezone: 'Europe/Istanbul',
+        latitude: 39.9334,
+        longitude: 32.8597,
         displayName: { fr: '🇹🇷 Ankara, Turquie', ar: '🇹🇷 أنقرة، تركيا' }
     },
     'paris-fr': {
@@ -117,6 +149,8 @@ const citiesDatabase = {
         country: 'FR',
         method: 2,
         timezone: 'Europe/Paris',
+        latitude: 48.8566,
+        longitude: 2.3522,
         displayName: { fr: '🇫🇷 Paris, France', ar: '🇫🇷 باريس، فرنسا' }
     },
     'london-gb': {
@@ -124,6 +158,8 @@ const citiesDatabase = {
         country: 'GB',
         method: 2,
         timezone: 'Europe/London',
+        latitude: 51.5074,
+        longitude: -0.1278,
         displayName: { fr: '🇬🇧 Londres, Royaume-Uni', ar: '🇬🇧 لندن، بريطانيا' }
     },
     'newyork-us': {
@@ -131,6 +167,8 @@ const citiesDatabase = {
         country: 'US',
         method: 2,
         timezone: 'America/New_York',
+        latitude: 40.7128,
+        longitude: -74.006,
         displayName: { fr: '🇺🇸 New York, États-Unis', ar: '🇺🇸 نيويورك، أمريكا' }
     },
     'toronto-ca': {
@@ -138,6 +176,8 @@ const citiesDatabase = {
         country: 'CA',
         method: 2,
         timezone: 'America/Toronto',
+        latitude: 43.6532,
+        longitude: -79.3832,
         displayName: { fr: '🇨🇦 Toronto, Canada', ar: '🇨🇦 تورونتو، كندا' }
     },
     'ottawa-ca': {
@@ -145,6 +185,8 @@ const citiesDatabase = {
         country: 'CA',
         method: 2,
         timezone: 'America/Toronto',
+        latitude: 45.4215,
+        longitude: -75.6972,
         displayName: { fr: '🇨🇦 Ottawa, Canada', ar: '🇨🇦 أوتاوا، كندا' }
     },
     'jakarta-id': {
@@ -152,6 +194,8 @@ const citiesDatabase = {
         country: 'ID',
         method: 1,
         timezone: 'Asia/Jakarta',
+        latitude: -6.2088,
+        longitude: 106.8456,
         displayName: { fr: '🇮🇩 Jakarta, Indonésie', ar: '🇮🇩 جاكرتا، إندونيسيا' }
     },
     'kualalumpur-my': {
@@ -159,6 +203,8 @@ const citiesDatabase = {
         country: 'MY',
         method: 1,
         timezone: 'Asia/Kuala_Lumpur',
+        latitude: 3.139,
+        longitude: 101.6869,
         displayName: { fr: '🇲🇾 Kuala Lumpur, Malaisie', ar: '🇲🇾 كوالالمبور، ماليزيا' }
     },
     'karachi-pk': {
@@ -166,6 +212,8 @@ const citiesDatabase = {
         country: 'PK',
         method: 1,
         timezone: 'Asia/Karachi',
+        latitude: 24.8607,
+        longitude: 67.0011,
         displayName: { fr: '🇵🇰 Karachi, Pakistan', ar: '🇵🇰 كراتشي، باكستان' }
     },
     'lahore-pk': {
@@ -173,6 +221,8 @@ const citiesDatabase = {
         country: 'PK',
         method: 1,
         timezone: 'Asia/Karachi',
+        latitude: 31.5497,
+        longitude: 74.3436,
         displayName: { fr: '🇵🇰 Lahore, Pakistan', ar: '🇵🇰 لاهور، باكستان' }
     },
     'dhaka-bd': {
@@ -180,6 +230,8 @@ const citiesDatabase = {
         country: 'BD',
         method: 1,
         timezone: 'Asia/Dhaka',
+        latitude: 23.8103,
+        longitude: 90.4125,
         displayName: { fr: '🇧🇩 Dhaka, Bangladesh', ar: '🇧🇩 دكا، بنغلاديش' }
     }
 };
@@ -1079,6 +1131,8 @@ const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Récupérer la VRAIE météo avec Open-Meteo (SANS CLÉ!)
 async function fetchRealWeather(cityName, lat, lon, cityIndex) {
+    console.log(`🌍 fetchRealWeather appelée: ${cityName} (${lat}, ${lon}) - Index: ${cityIndex}`);
+    
     const cacheKey = `${cityName}-${lat}-${lon}`;
     
     // Vérifier le cache
@@ -1093,7 +1147,7 @@ async function fetchRealWeather(cityName, lat, lon, cityIndex) {
         // API Open-Meteo - GRATUITE, SANS CLÉ!
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
         
-        console.log(`🌍 Récupération météo pour ${cityName}...`);
+        console.log(`📡 Appel API: ${url}`);
         
         const response = await fetch(url);
         
@@ -1102,6 +1156,7 @@ async function fetchRealWeather(cityName, lat, lon, cityIndex) {
         }
         
         const data = await response.json();
+        console.log(`📦 Données reçues:`, data);
         
         // Extraire température et code météo
         const temp = Math.round(data.current_weather.temperature);
@@ -1117,12 +1172,14 @@ async function fetchRealWeather(cityName, lat, lon, cityIndex) {
         });
         
         // Afficher
+        console.log(`🎨 Appel updateAllPrayersWeather(${cityIndex}, ${temp}, ${weatherCode})`);
         updateAllPrayersWeather(cityIndex, temp, weatherCode);
         
     } catch (error) {
         console.error(`❌ Erreur météo pour ${cityName}:`, error);
         // Météo par défaut selon saison
         const defaultTemp = getDefaultTempBySeason();
+        console.log(`⚠️ Utilisation température par défaut: ${defaultTemp}°C`);
         updateAllPrayersWeather(cityIndex, defaultTemp, 0);
     }
 }
@@ -1251,38 +1308,36 @@ function updateAllPrayersWeather(cityIndex, temp, weatherCode) {
 
 // Initialiser la météo RÉELLE pour toutes les villes
 function initRealWeather() {
-    // City 1
-    const city1Select = document.getElementById('city1-select');
-    if (city1Select) {
-        const cityName = city1Select.value;
-        const selectedCity = cities.find(c => c.name === cityName);
-        if (selectedCity) {
-            fetchRealWeather(
-                selectedCity.name,
-                selectedCity.latitude,
-                selectedCity.longitude,
-                1
-            );
+    console.log('🌤️ ===== INIT MÉTÉO TEMPS RÉEL =====');
+    
+    // Ville 1
+    const city1Id = selectedCities.city1;
+    if (city1Id && citiesDatabase[city1Id]) {
+        const city = citiesDatabase[city1Id];
+        if (city.latitude && city.longitude) {
+            console.log(`📍 Ville 1: ${city.name} (${city.latitude}, ${city.longitude})`);
+            fetchRealWeather(city.name, city.latitude, city.longitude, 1);
+        } else {
+            console.error(`❌ Pas de coordonnées pour ${city.name}`);
         }
     }
     
-    // City 2 si visible
+    // Ville 2 si visible
     const city2Card = document.getElementById('city2-card');
     if (city2Card && city2Card.style.display !== 'none') {
-        const city2Select = document.getElementById('city2-select');
-        if (city2Select) {
-            const cityName = city2Select.value;
-            const selectedCity = cities.find(c => c.name === cityName);
-            if (selectedCity) {
-                fetchRealWeather(
-                    selectedCity.name,
-                    selectedCity.latitude,
-                    selectedCity.longitude,
-                    2
-                );
+        const city2Id = selectedCities.city2;
+        if (city2Id && citiesDatabase[city2Id]) {
+            const city = citiesDatabase[city2Id];
+            if (city.latitude && city.longitude) {
+                console.log(`📍 Ville 2: ${city.name} (${city.latitude}, ${city.longitude})`);
+                fetchRealWeather(city.name, city.latitude, city.longitude, 2);
+            } else {
+                console.error(`❌ Pas de coordonnées pour ${city.name}`);
             }
         }
     }
+    
+    console.log('🏁 ===== FIN INIT MÉTÉO =====');
 }
 
 // Rafraîchir la météo toutes les 10 minutes
@@ -1302,28 +1357,42 @@ function toDegrees(radians) {
 
 // ========== INITIALISATION AU CHARGEMENT ==========
 
-// Attendre que la page soit chargée
-setTimeout(() => {
-    // Initialiser la météo RÉELLE en temps réel
-    initRealWeather();
+// S'assurer que la page est complètement chargée
+window.addEventListener('load', () => {
+    console.log('🚀 Page chargée, initialisation météo...');
     
-    console.log('🌤️ Météo TEMPS RÉEL activée!');
-}, 1000); // 1 seconde pour laisser charger la page
+    // Attendre 2 secondes pour être sûr que tout est prêt
+    setTimeout(() => {
+        console.log('📡 Appel initRealWeather...');
+        initRealWeather();
+        console.log('✅ Météo TEMPS RÉEL activée!');
+    }, 2000);
+});
 
-// Rafraîchir quand l'utilisateur change de ville
+// Aussi essayer avec DOMContentLoaded (backup)
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('📄 DOM chargé');
+    
     const city1Select = document.getElementById('city1-select');
     const city2Select = document.getElementById('city2-select');
     
     if (city1Select) {
         city1Select.addEventListener('change', () => {
+            console.log('🔄 Changement ville 1');
             setTimeout(initRealWeather, 500);
         });
     }
     
     if (city2Select) {
         city2Select.addEventListener('change', () => {
+            console.log('🔄 Changement ville 2');
             setTimeout(initRealWeather, 500);
         });
     }
+    
+    // Aussi initialiser ici (backup)
+    setTimeout(() => {
+        console.log('📡 Backup: Appel initRealWeather...');
+        initRealWeather();
+    }, 3000);
 });
